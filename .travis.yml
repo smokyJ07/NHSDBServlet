@@ -13,6 +13,6 @@ cache:
 deploy:
   provider: heroku
   api_key:
-    secure: 9a795d1c-dacf-495b-a6f2-4b7d97e9e7f4
+    secure: b8bcde63-9a39-43b7-b13a-67c257455319
   app: nhsdbservlet
   skip_cleanup: true
