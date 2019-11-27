@@ -3,11 +3,13 @@ plugins {
     id 'war' // To create a webapp jar file, ie a '.war' file
     id 'org.gretty' version '2.2.0' // This includes a jetty webserver
 }
+
 version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 repositories {
     jcenter() // gretty doesn't exist in mavenCentral, so use jcenter
 }
+
 war{
     from {
         // all of the library jar files used are to be zipped into the war file
@@ -16,13 +18,18 @@ war{
         }
     }
 }
+
+
 task stage(dependsOn: ['build', 'clean'])
 build.mustRunAfter clean
+
+
 dependencies {
     // To include gson - google's json helper libraries (no later than v2.7!)
     compile group: 'com.google.code.gson', name:'gson', version: '2.7'
     // to include the servlet libraries
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    runtimeOnly group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
 }
 
