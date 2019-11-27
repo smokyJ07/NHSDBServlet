@@ -1,11 +1,29 @@
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class Main {
-    public static void main(String[] args) {
+@WebServlet(urlPatterns={"/"},loadOnStartup = 1)
+public class DBServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html");
+        String message = "Hello, World!";
+        resp.getWriter().write(message);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    public void createDB() {
         String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
         try {
