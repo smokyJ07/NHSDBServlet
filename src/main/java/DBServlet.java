@@ -10,7 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-@WebServlet(urlPatterns={""},loadOnStartup = 1)
+@WebServlet(urlPatterns={"/patients"},loadOnStartup = 1)
 public class DBServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
