@@ -18,7 +18,7 @@ public class Main {
             // sqlStr = addPatient("Cristian", "Gutierrez", "222222222");
             // s.execute(sqlStr);
 
-            sqlStr = addDoctor("Anil", "Bharath", "11111111");
+            sqlStr = addDoctor("Angela", "Kedgley", "11111111");
             s.execute(sqlStr);
 
             //String sqlStr = getPatient("Gutierrez");
