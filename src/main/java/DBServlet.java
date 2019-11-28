@@ -1,4 +1,6 @@
 
+import com.google.gson.Gson;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns={"/patients"},loadOnStartup = 1)
 public class DBServlet extends HttpServlet {
@@ -21,6 +24,11 @@ public class DBServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        Gson gson = new Gson();
+        Patient p=gson.fromJson(reqBody,Patient.class);
+        System.out.println(reqBody);
+
     }
 
     public void createDB() {
