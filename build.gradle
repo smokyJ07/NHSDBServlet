@@ -26,6 +26,10 @@ build.mustRunAfter clean
 
 dependencies {
     // To include gson - google's json helper libraries (no later than v2.7!)
+
+    testCompile group: 'org.hamcrest', name:'hamcrest', version:'2.2'
+
+
     compile group: 'com.google.code.gson', name:'gson', version: '2.7'
     // to include the servlet libraries
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
