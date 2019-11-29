@@ -1,5 +1,6 @@
-
 import com.google.gson.Gson;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.json.JSONObject;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
@@ -24,12 +25,17 @@ public class DBServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        Gson gson = new Gson();
-        Patient p=gson.fromJson(reqBody,Patient.class);
-        System.out.println(reqBody);
-
+        //JSONParser parser=new JSONParser();
+        try {
+            JSONObject reqAsJsonObject = new JSONObject(reqBody);
+            //String function= reqAsJsonObject::json->"function";
+            //JSONObject data = reqAsJsonObject::json->"data";
+            //Gson gson = new Gson();
+            //Patient p=gson.fromJson(reqBody,Patient.class);
+            System.out.println(reqAsJsonObject);
+        }catch(Exception e){};
     }
 
     public void createDB() {
