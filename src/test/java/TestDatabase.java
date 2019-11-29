@@ -13,7 +13,7 @@ public class TestDatabase {
     public void TestaddPatient(){
         Patient p1=new Patient("Martin", " Holloway", "888888888");
 
-        Assert.assertThat(p1.name, is(equalTo("Martin")));
+        Assert.assertThat(p1.firstName, is(equalTo("Martin")));
       //  System.out.println("Hi");
     }
 
