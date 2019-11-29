@@ -1,12 +1,12 @@
-
 public class Patient {
-    public String name;
-    public String lastname;
-    public String phonenumber;
 
-    public Patient(String name, String lastname, String phonenumber){
-        this.name = name;
-        this.lastname=lastname;
-        this.phonenumber=phonenumber;
+    public String firstName;
+    public String lastName;
+    public String phoneNum;
+
+    public Patient(String firstName, String lastName, String phoneNum){
+        this.firstName=firstName;
+        this.lastName=lastName;
+        this.phoneNum=phoneNum;
     }
 }
