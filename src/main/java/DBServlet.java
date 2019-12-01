@@ -28,18 +28,15 @@ public class DBServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
-        String message = "Hello, World!";
 
-        resp.getWriter().write(message);
 
         ResultSet rset = null;
         try {
+
             rset = getPatient("Gutierrez");
-            String message1 = "Hello, World!";
-            resp.getWriter().write(message1);
             while(rset.next()){
-                resp.getWriter().write(rset.getInt("id")+" "+ rset.getString("lastName"));
+                resp.getWriter().write(rset.getString("lastName"));
+                resp.getWriter().write("\n");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -75,9 +72,6 @@ public class DBServlet extends HttpServlet {
         s.execute(message);
 
         ResultSet rset=s.executeQuery(message);
-        while(rset.next()){
-            System.out.println(rset.getInt("id")+" "+ rset.getString("lastName"));
-        }
         return rset;
     }
 
