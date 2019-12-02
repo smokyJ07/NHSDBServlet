@@ -8,6 +8,7 @@ import static junit.framework.TestCase.assertEquals;
 
 public class TestDatabase {
 
+    /*
   //  private static final Logger log= Logger.getLogger(Patient.class.getName());
     @Test
     public void TestaddPatient(){
@@ -29,6 +30,6 @@ public class TestDatabase {
 
 
     }
-
+*/
 
 }

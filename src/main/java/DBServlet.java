@@ -27,14 +27,13 @@ public class DBServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        System.out.println(reqBody);
         //JSONParser parser=new JSONParser();
         try {
             JSONObject reqAsJsonObject = new JSONObject(reqBody);
             //String function= reqAsJsonObject::json->"function";
             //JSONObject data = reqAsJsonObject::json->"data";
-            //Gson gson = new Gson();
-            //Patient p=gson.fromJson(reqBody,Patient.class);
-            System.out.println(reqAsJsonObject);
+            System.out.println("hello");
         }catch(Exception e){};
     }
 
