@@ -5,6 +5,10 @@ public class Patient {
     public String firstName;
     public String lastName;
     public String phoneNum;
+    public String address;
+    public String dob;
+    public String email;
+
 
     public Patient(String firstName, String lastName, String phoneNum){
         this.firstName=firstName;
