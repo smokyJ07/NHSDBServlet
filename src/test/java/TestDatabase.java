@@ -11,15 +11,16 @@ import static junit.framework.TestCase.assertEquals;
 public class TestDatabase {
 
     /*
-  //  private static final Logger log= Logger.getLogger(Patient.class.getName());
+  //  private static final Logger log= Logger.getLogger(DBClasses.Patient.class.getName());
   /*  @Test
     public void TestaddPatient(){
-        Patient p1=new Patient("Martin", " Holloway", "888888888");
+        DBClasses.Patient p1=new DBClasses.Patient("Martin", " Holloway", "888888888");
 
         Assert.assertThat(p1.firstName, is(equalTo("Martin")));
       //  System.out.println("Hi");
     }*/
 
+    /*
     @Test
     public void TestaddDB() throws SQLException {
         // DBServlet info= new DBServlet();
@@ -30,6 +31,6 @@ public class TestDatabase {
 
 
     }
-*/
 
+     */
 }

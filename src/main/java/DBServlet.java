@@ -1,5 +1,4 @@
-import com.google.gson.Gson;
-import jdk.nashorn.internal.parser.JSONParser;
+import DBFunctions.DBInterface;
 import org.json.JSONObject;
 
 import javax.servlet.ServletContextEvent;
@@ -51,14 +50,24 @@ public class DBServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        System.out.println(reqBody);
-        //JSONParser parser=new JSONParser();
+        //System.out.println(reqBody);
         try {
-            JSONObject reqAsJsonObject = new JSONObject(reqBody);
-            //String function= reqAsJsonObject::json->"function";
-            //JSONObject data = reqAsJsonObject::json->"data";
-            System.out.println("hello");
-        }catch(Exception e){};
+            //parse and decompose json received
+            JSONObject reqBodyJson = new JSONObject(reqBody);
+            String function = (String) reqBodyJson.get("function");
+            JSONObject data = (JSONObject) reqBodyJson.get("data");
+            //execute correct function
+            DBInterface dbInterface = new DBInterface();
+            if (function.equals("addPatient")){
+                dbInterface.addPatient(data);
+            }
+            else{
+                System.out.println("No matching function found!");
+            }
+
+        }catch(Exception e){
+            System.out.println("Exception occured while parsing JSON.");
+        };
     }
 
     public static void addPatient(String name, String lastname, String phonenumber) throws SQLException {
