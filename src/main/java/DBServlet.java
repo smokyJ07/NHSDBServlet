@@ -61,28 +61,22 @@ public class DBServlet extends HttpServlet {
             if (function.equals("addPatient")){
                 dbInterface.addPatient(data);
             }
+            else if(function.equals("addDoctor")){
+                dbInterface.addDoctor(data);
+            }
+            else if(function.equals("addMC")){
+                dbInterface.addMC(data);
+            }
             else{
                 System.out.println("No matching function found!");
             }
+
 
         }catch(Exception e){
             System.out.println("Exception occured while parsing JSON.");
         };
     }
 
-    public static void addPatient(String name, String lastname, String phonenumber) throws SQLException {
-        initDatabaseConnection();
-        String message;
-        message = "INSERT INTO patients (\"firstName\", \"lastName\", phonenumber) values ('"+name+"', '"+lastname+"','"+phonenumber+"');";
-        s.execute(message);
-    }
-
-    public static void addDoctor(String name, String lastname,String pagernumber) throws SQLException {
-        initDatabaseConnection();
-        String message;
-        message = "INSERT INTO doctors (\"firstName\", \"lastName\", pagernumber) values ('"+name+"', '"+lastname+"','"+pagernumber+"');";
-        s.execute(message);
-    }
 
     public static ResultSet getPatient(String lastname) throws SQLException {
         initDatabaseConnection();
