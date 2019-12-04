@@ -1,4 +1,7 @@
-import com.google.gson.Gson;
+import DBFunctions.DBInterface;
+import org.json.JSONObject;
+
+import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -7,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
 import java.util.stream.Collectors;
-import java.sql.Statement;
 
 @WebServlet(urlPatterns={"/patients"},loadOnStartup = 1)
 public class DBServlet extends HttpServlet {
@@ -28,15 +30,17 @@ public class DBServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        resp.setContentType("text/html");
+        String message = "Hello, World!";
+        resp.getWriter().write(message);
 
         ResultSet rset = null;
         try {
-
             rset = getPatient("Gutierrez");
+            String message1 = "Hello, World!";
+            resp.getWriter().write(message1);
             while(rset.next()){
-                resp.getWriter().write(rset.getString("lastName"));
-                resp.getWriter().write("\n");
+                resp.getWriter().write(rset.getInt("id")+" "+ rset.getString("lastName"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,11 +48,26 @@ public class DBServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        Gson gson = new Gson();
-        Patient p=gson.fromJson(reqBody,Patient.class);
-        System.out.println(reqBody);
+        //System.out.println(reqBody);
+        try {
+            //parse and decompose json received
+            JSONObject reqBodyJson = new JSONObject(reqBody);
+            String function = (String) reqBodyJson.get("function");
+            JSONObject data = (JSONObject) reqBodyJson.get("data");
+            //execute correct function
+            DBInterface dbInterface = new DBInterface();
+            if (function.equals("addPatient")){
+                dbInterface.addPatient(data);
+            }
+            else{
+                System.out.println("No matching function found!");
+            }
+
+        }catch(Exception e){
+            System.out.println("Exception occured while parsing JSON.");
+        };
     }
 
     public static void addPatient(String name, String lastname, String phonenumber) throws SQLException {
@@ -72,6 +91,9 @@ public class DBServlet extends HttpServlet {
         s.execute(message);
 
         ResultSet rset=s.executeQuery(message);
+        while(rset.next()){
+            System.out.println(rset.getInt("id")+" "+ rset.getString("lastName"));
+        }
         return rset;
     }
 
@@ -81,4 +103,5 @@ public class DBServlet extends HttpServlet {
         message = "update patients set "+parameter+"='"+newvalue+"' where id="+id+";";
         s.execute(message);
     }
+
 }

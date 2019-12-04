@@ -1,3 +1,5 @@
+package DBClasses;
+
 public class Patient {
 
     public String firstName;
