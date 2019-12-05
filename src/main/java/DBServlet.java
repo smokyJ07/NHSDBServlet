@@ -20,7 +20,8 @@ public class DBServlet extends HttpServlet {
 
         try {
             Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection(dbUrl, "postgres", "aleseb99");
+            Connection conn = DriverManager.getConnection(dbUrl, "postgres", "Chhoopnege2k22");
+            // CHANGED POSTGRES PASSWORD FROM ALEX'S TO MINE (CHLOE)
             s = conn.createStatement();
         }catch (Exception e) {
             System.out.println(e);
@@ -74,7 +75,7 @@ public class DBServlet extends HttpServlet {
 
         }catch(Exception e){
             System.out.println("Exception occured while parsing JSON.");
-        };
+        }
     }
 
 

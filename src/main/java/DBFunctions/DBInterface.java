@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBInterface {
-
     static Statement s = null;
 
     public DBInterface(){
@@ -22,7 +21,8 @@ public class DBInterface {
 
         try {
             Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection(dbUrl, "postgres", "aleseb99");
+            // CHANGED POSTGRES PASSWORD FROM ALEX'S TO MINE (CHLOE)
+            Connection conn = DriverManager.getConnection(dbUrl, "postgres", "Chhoopnege2k22");
             s = conn.createStatement();
         }catch (Exception e) {
             System.out.println(e);
@@ -39,7 +39,7 @@ public class DBInterface {
             System.out.println(patientData);
 
             String message;
-            message = "INSERT INTO patients (\"firstName\", \"lastName\", \"phonenumber\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
+            message = "INSERT INTO patients (\"firstname\", \"lastname\", \"phonenum\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
             s.execute(message);
 
         }catch(SQLException e){
@@ -55,7 +55,7 @@ public class DBInterface {
             System.out.println(doctorData);
 
             String message;
-            message = "INSERT INTO doctors (\"firstName\", \"lastName\", \"pagerNumber\", \"email\") values ('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
+            message = "INSERT INTO doctors (\"firstname\", \"lastname\", \"pagernum\", \"email\") values ('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
             s.execute(message);
 
         }catch(SQLException e){
@@ -72,7 +72,7 @@ public class DBInterface {
             System.out.println(MCData);
 
             String message;
-            message = "INSERT INTO medicalcentre (name, address) values ('"+m.name+"', '"+m.address+"');";
+            message = "INSERT INTO medicalcentre (\"name\", \"address\") values ('"+m.name+"', '"+m.address+"');";
           //  INSERT INTO medicalCentre (name, address) values ('hello', 'medicalcentre');
             s.execute(message);
 
