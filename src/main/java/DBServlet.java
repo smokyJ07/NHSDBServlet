@@ -14,47 +14,14 @@ import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns={"/patients"},loadOnStartup = 1)
 public class DBServlet extends HttpServlet {
-    static Statement s = null;
-
-    private static Connection getConnection() throws URISyntaxException, SQLException {
-        String dbUrl = System.getenv("JDBC_DATABASE_URL");
-        return DriverManager.getConnection(dbUrl);
-    }
-
-    protected static void initDatabaseConnection() {
-
-        //connection to heroku online postgresql db
-        try{
-            Connection conn = getConnection();
-            s = conn.createStatement();
-            System.out.println("Connection open");
-        }catch(Exception e){
-            e.printStackTrace();
-            System.out.println("Connection failed");
-        }
-
-
-        //connection to alex' local db
-        /*String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
-
-        try {
-            Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection(dbUrl, "postgres", "aleseb99");
-            s = conn.createStatement();
-        }catch (Exception e) {
-            System.out.println(e);
-            String l=e.getMessage();
-        }*/
-    }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html");
         String message = "Hello, World!";
         resp.getWriter().write(message);
 
-        //try to connect to heroku postgresql dp
-        initDatabaseConnection();
+        //create our database interface class and try to connect to heroku postgresql db
+        DBInterface dbInterface = new DBInterface();
 
         /*ResultSet rset = null;
         try {
@@ -99,9 +66,9 @@ public class DBServlet extends HttpServlet {
         };
     }
 
-
+    /*
     public static ResultSet getPatient(String lastname) throws SQLException {
-        initDatabaseConnection();
+        //NOT WORKING AT THE MOMENT -> transfer to DBInterface
         String message;
         message = "select * from patients where \"lastName\" = '"+lastname+"';";
         s.execute(message);
@@ -114,10 +81,10 @@ public class DBServlet extends HttpServlet {
     }
 
     public static void modPatient(int id, String parameter, String newvalue) throws SQLException {
-        initDatabaseConnection();
+        //NOT WORKING AT THE MOMENT -> transfer to DBInterface
         String message;
         message = "update patients set "+parameter+"='"+newvalue+"' where id="+id+";";
         s.execute(message);
-    }
+    }*/
 
 }

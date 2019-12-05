@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,7 +19,19 @@ public class DBInterface {
     static Statement s = null;
 
     public DBInterface(){
-        String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+        //connection to heroku online postgresql db
+        try{
+            Connection conn = getConnection();
+            s = conn.createStatement();
+            System.out.println("Connection open");
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("Connection failed");
+        }
+
+
+        //connection to alex' local db
+        /*String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -27,9 +40,13 @@ public class DBInterface {
         }catch (Exception e) {
             System.out.println(e);
             String l=e.getMessage();
-        }
+        }*/
     }
 
+    private static Connection getConnection() throws URISyntaxException, SQLException {
+        String dbUrl = System.getenv("JDBC_DATABASE_URL");
+        return DriverManager.getConnection(dbUrl);
+    }
 
     public void addPatient(JSONObject data){
         try {
