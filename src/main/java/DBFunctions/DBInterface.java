@@ -48,9 +48,15 @@ public class DBInterface {
 
     private boolean tableExists(String tableName){
         try {
-            String queryMessage = "SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'patient');";
+            String queryMessage = String.format("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = %s);", tableName);
             Statement s = conn.createStatement();
-            return s.execute(queryMessage);
+            ResultSet rset = s.executeQuery(queryMessage);
+            boolean result = true;
+            while(rset.next()){
+                result = rset.getBoolean("exists");
+                System.out.println(result);
+            }
+            return result;
         }catch(SQLException e){
             e.printStackTrace();
         }
