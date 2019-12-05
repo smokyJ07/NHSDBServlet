@@ -66,7 +66,16 @@ public class DBInterface {
     private void createTables(){
         System.out.println("Creating tables...");
         if(!tableExists("patients")){
-            System.out.println("Create patients table...");
+            System.out.println("Creating patients table...");
+            try {
+                Statement s = conn.createStatement();
+                String sql = "create table patients(id SERIAL PRIMARY KEY, firstname varchar(128) NOT NULL, " +
+                        "lastname varchar(128) NOT NULL, phonenum varchar(32), address varchar (128), " +
+                        "dob varchar(128), email varchar(128))";
+                s.execute(sql);
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
         }
         if(!tableExists("doctors")){
             System.out.println("Creating doctors table...");
