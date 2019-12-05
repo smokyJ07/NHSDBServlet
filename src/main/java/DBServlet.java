@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.stream.Collectors;
 
@@ -15,8 +16,26 @@ import java.util.stream.Collectors;
 public class DBServlet extends HttpServlet {
     static Statement s = null;
 
+    private static Connection getConnection() throws URISyntaxException, SQLException {
+        String dbUrl = System.getenv("JDBC_DATABASE_URL");
+        return DriverManager.getConnection(dbUrl);
+    }
+
     protected static void initDatabaseConnection() {
-        String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+
+        //connection to heroku online postgresql db
+        try{
+            Connection conn = getConnection();
+            s = conn.createStatement();
+            System.out.println("Connection open");
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("Connection failed");
+        }
+
+
+        //connection to alex' local db
+        /*String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -25,7 +44,7 @@ public class DBServlet extends HttpServlet {
         }catch (Exception e) {
             System.out.println(e);
             String l=e.getMessage();
-        }
+        }*/
     }
 
     @Override
@@ -34,7 +53,10 @@ public class DBServlet extends HttpServlet {
         String message = "Hello, World!";
         resp.getWriter().write(message);
 
-        ResultSet rset = null;
+        //try to connect to heroku postgresql dp
+        initDatabaseConnection();
+
+        /*ResultSet rset = null;
         try {
             rset = getPatient("Gutierrez");
             String message1 = "Hello, World!";
@@ -44,7 +66,7 @@ public class DBServlet extends HttpServlet {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
