@@ -9,26 +9,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DBInterface {
 
-    static Statement s = null;
+    static Connection conn = null;
 
     public DBInterface(){
         //connection to heroku online postgresql db
         try{
-            Connection conn = getConnection();
-            s = conn.createStatement();
+            conn = getConnection();
+            Statement s = conn.createStatement();
             System.out.println("Connection open");
         }catch(Exception e){
             e.printStackTrace();
             System.out.println("Connection failed");
         }
-
 
         //connection to alex' local db
         /*String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
@@ -41,11 +37,38 @@ public class DBInterface {
             System.out.println(e);
             String l=e.getMessage();
         }*/
+
+        createTables();
     }
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
         String dbUrl = System.getenv("JDBC_DATABASE_URL");
         return DriverManager.getConnection(dbUrl);
+    }
+
+    private boolean tableExists(String tableName){
+        try {
+            String queryMessage = "SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'patient');";
+            Statement s = conn.createStatement();
+            return s.execute(queryMessage);
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void createTables(){
+        System.out.println("Creating tables...");
+        if(tableExists("patients")){
+            System.out.println("Create patients table...");
+        }
+        if(tableExists("doctors")){
+            System.out.println("Creating doctors table...");
+        }
+        if(tableExists("medicalcentres")){
+            System.out.println("Creating medicalcentres table...");
+        }
+        System.out.println("All required tables exist.");
     }
 
     public void addPatient(JSONObject data){
@@ -57,6 +80,7 @@ public class DBInterface {
 
             String message;
             message = "INSERT INTO patients (\"firstName\", \"lastName\", \"phonenumber\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
+            Statement s = conn.createStatement();
             s.execute(message);
 
         }catch(SQLException e){
@@ -73,6 +97,7 @@ public class DBInterface {
 
             String message;
             message = "INSERT INTO doctors (\"firstName\", \"lastName\", \"pagerNumber\", \"email\") values ('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
+            Statement s = conn.createStatement();
             s.execute(message);
 
         }catch(SQLException e){
@@ -89,8 +114,9 @@ public class DBInterface {
             System.out.println(MCData);
 
             String message;
-            message = "INSERT INTO medicalcentre (name, address) values ('"+m.name+"', '"+m.address+"');";
+            message = "INSERT INTO medicalcentres (name, address) values ('"+m.name+"', '"+m.address+"');";
           //  INSERT INTO medicalCentre (name, address) values ('hello', 'medicalcentre');
+            Statement s = conn.createStatement();
             s.execute(message);
 
         }catch(SQLException e){
