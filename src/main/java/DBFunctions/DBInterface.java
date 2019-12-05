@@ -51,7 +51,7 @@ public class DBInterface {
             String queryMessage = String.format("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = %s);", tableName);
             Statement s = conn.createStatement();
             ResultSet rset = s.executeQuery(queryMessage);
-            boolean result = true;
+            boolean result = false;
             while(rset.next()){
                 result = rset.getBoolean("exists");
                 System.out.println(result);
@@ -65,13 +65,13 @@ public class DBInterface {
 
     private void createTables(){
         System.out.println("Creating tables...");
-        if(tableExists("patients")){
+        if(!tableExists("patients")){
             System.out.println("Create patients table...");
         }
-        if(tableExists("doctors")){
+        if(!tableExists("doctors")){
             System.out.println("Creating doctors table...");
         }
-        if(tableExists("medicalcentres")){
+        if(!tableExists("medicalcentres")){
             System.out.println("Creating medicalcentres table...");
         }
         System.out.println("All required tables exist.");
