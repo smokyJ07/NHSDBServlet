@@ -67,6 +67,9 @@ public class DBServlet extends HttpServlet {
             else if(function.equals("addMC")){
                 dbInterface.addMC(data);
             }
+            else if(function.equals("getPatient")){
+                dbInterface.getPatient(data);
+            }
             else{
                 System.out.println("No matching function found!");
             }
