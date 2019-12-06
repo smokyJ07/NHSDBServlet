@@ -79,6 +79,8 @@ public class DBInterface {
         }catch(SQLException e){
             System.out.println("Error while executing SQL function in addMC");
             e.printStackTrace();
+
+            // Hello this is going to be the branch
         }
     }
 
