@@ -26,19 +26,21 @@ public class DBInterface {
             System.out.println("Connection failed");
         }
 
-        //connection to alex' local db
+        //use this to connect to your local db: note to change password and username to whatever you use
         /*String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
         try {
             Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection(dbUrl, "postgres", "aleseb99");
-            s = conn.createStatement();
+            conn = DriverManager.getConnection(dbUrl, "postgres", "12345678");
+            Statement s = conn.createStatement();
+            System.out.println("Local connection open");
+
+            createTables();
         }catch (Exception e) {
-            System.out.println(e);
-            String l=e.getMessage();
+            System.out.println("Local connection failed");
+            e.printStackTrace();
         }*/
 
-        createTables();
     }
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
@@ -48,7 +50,7 @@ public class DBInterface {
 
     private boolean tableExists(String tableName){
         try {
-            String queryMessage = String.format("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = %s);", tableName);
+            String queryMessage = String.format("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '%s');", tableName);
             Statement s = conn.createStatement();
             ResultSet rset = s.executeQuery(queryMessage);
             boolean result = false;
@@ -79,9 +81,25 @@ public class DBInterface {
         }
         if(!tableExists("doctors")){
             System.out.println("Creating doctors table...");
+            try {
+                Statement s = conn.createStatement();
+                String sql = "create table doctors(id SERIAL PRIMARY KEY, firstname varchar(128) NOT NULL, " +
+                        "lastname varchar(128) NOT NULL, pagernum varchar(32), email varchar(128))";
+                s.execute(sql);
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
         }
         if(!tableExists("medicalcentres")){
             System.out.println("Creating medicalcentres table...");
+            try {
+                Statement s = conn.createStatement();
+                String sql = "create table medicalcentres(id SERIAL PRIMARY KEY, name varchar(128) NOT NULL, " +
+                        "address varchar (128))";
+                s.execute(sql);
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
         }
         System.out.println("All required tables exist.");
     }
@@ -91,15 +109,16 @@ public class DBInterface {
             Gson gson = new Gson();
             String patientData = data.toString();
             Patient p = gson.fromJson(patientData, Patient.class);
-            System.out.println(patientData);
 
             String message;
-            message = "INSERT INTO patients (\"firstName\", \"lastName\", \"phonenumber\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
+            message = "INSERT INTO patients (\"firstname\", \"lastname\", \"phonenum\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
             Statement s = conn.createStatement();
             s.execute(message);
+            System.out.println("Added patient with data:" + patientData);
 
         }catch(SQLException e){
             System.out.println("Error while executing SQL function in addPatient");
+            e.printStackTrace();
         }
     }
 
@@ -108,12 +127,12 @@ public class DBInterface {
             Gson gson = new Gson();
             String doctorData = data.toString();
             Doctor d = gson.fromJson(doctorData, Doctor.class);
-            System.out.println(doctorData);
 
             String message;
-            message = "INSERT INTO doctors (\"firstName\", \"lastName\", \"pagerNumber\", \"email\") values ('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
+            message = "INSERT INTO doctors (\"firstname\", \"lastname\", \"pagernum\", \"email\") values ('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
             Statement s = conn.createStatement();
             s.execute(message);
+            System.out.println("Added doctor with data:" + doctorData);
 
         }catch(SQLException e){
             System.out.println("Error while executing SQL function in addDoctor");
@@ -126,13 +145,13 @@ public class DBInterface {
             Gson gson = new Gson();
             String MCData = data.toString();
             medicalCentre m = gson.fromJson(MCData, medicalCentre.class);
-            System.out.println(MCData);
 
             String message;
             message = "INSERT INTO medicalcentres (name, address) values ('"+m.name+"', '"+m.address+"');";
           //  INSERT INTO medicalCentre (name, address) values ('hello', 'medicalcentre');
             Statement s = conn.createStatement();
             s.execute(message);
+            System.out.println("Added MC with data:" + MCData);
 
         }catch(SQLException e){
             System.out.println("Error while executing SQL function in addMC");
