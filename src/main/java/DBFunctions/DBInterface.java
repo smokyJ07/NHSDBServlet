@@ -21,6 +21,8 @@ public class DBInterface {
             conn = getConnection();
             Statement s = conn.createStatement();
             System.out.println("Connection open");
+
+            createTables();
         }catch(Exception e){
             e.printStackTrace();
             System.out.println("Connection failed");
