@@ -27,36 +27,75 @@ public class DBInterface {
         }
     }
 
-   // public static void getPatient(String toString) {
-  //  }
-
-
     public static void getPatient(JSONObject data) throws SQLException {
         new DBInterface();
         try {
             Gson gson = new Gson();
             String patientData = data.toString();
-
             Patient p = gson.fromJson(patientData, Patient.class);
-            System.out.println(data);
-            String message = "select * from patients where \"lastName\" = '" + p.lastName + "';";
+            String message = "select * from patients where \"lastName\" = '" + p.lastName +
+                    "' and \"firstName\" = '"+p.firstName+"';";
             s.execute(message);
 
             ResultSet rset = s.executeQuery(message);
             while(rset.next()) {
-             //   System.out.println(rset.getInt("id") + " " + rset.getString("lastName"));
                 Patient newP = new Patient(rset.getString("firstName"), rset.getString("lastName"),
                         rset.getString("phonenumber"), rset.getString("address"), rset.getString("email"));
                 System.out.println(newP.firstName);
                 System.out.println(newP.lastName);
-                System.out.println(" ");
             }
         }
         catch(SQLException e) {
             System.out.println("Error while executing SQL function in addPatient");
             e.printStackTrace();
         }
+    }
 
+    public static void getDoctor(JSONObject data) throws SQLException {
+        new DBInterface();
+        try {
+            Gson gson = new Gson();
+            String doctorData = data.toString();
+            Doctor d = gson.fromJson(doctorData, Doctor.class);
+            String message = "select * from doctors where \"lastName\" = '" + d.lastName +
+                   "'and \"firstName\" = '"+d.firstName+"';";
+            s.execute(message);
+
+            ResultSet rset = s.executeQuery(message);
+            while(rset.next()) {
+                Doctor newD = new Doctor(rset.getString("firstName"), rset.getString("lastName"),
+                        rset.getString("pagerNumber"), rset.getString("email"));
+                System.out.println(newD.firstName);
+                System.out.println(newD.lastName);
+            }
+        }
+        catch(SQLException e) {
+            System.out.println("Error while executing SQL function in addPatient");
+            e.printStackTrace();
+        }
+    }
+
+    public static void getMC(JSONObject data) throws SQLException {
+        System.out.println("i got here");
+        new DBInterface();
+        try {
+            Gson gson = new Gson();
+            String MCData = data.toString();
+            medicalCentre mc = gson.fromJson(MCData, medicalCentre.class);
+            String message = "select * from medicalcentre where \"name\" = '" + mc.name +"';";
+            s.execute(message);
+
+            ResultSet rset = s.executeQuery(message);
+            while(rset.next()) {
+                medicalCentre newMC = new medicalCentre(rset.getString("name"), rset.getString("address"));
+                System.out.println(newMC.name);
+                System.out.println(newMC.address);
+            }
+        }
+        catch(SQLException e) {
+            System.out.println("Error while executing SQL function in addPatient");
+            e.printStackTrace();
+        }
     }
 
     public void addPatient(JSONObject data){
@@ -67,7 +106,8 @@ public class DBInterface {
             System.out.println(patientData);
 
             String message;
-            message = "INSERT INTO patients (\"firstName\", \"lastName\", \"phonenumber\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
+            message = "INSERT INTO patients (\"firstName\", \"lastName\", \"phonenumber\", \"address\", \"dob\", \"email\") " +
+                    "values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
             s.execute(message);
 
 
@@ -84,7 +124,8 @@ public class DBInterface {
             System.out.println(doctorData);
 
             String message;
-            message = "INSERT INTO doctors (\"firstName\", \"lastName\", \"pagerNumber\", \"email\") values ('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
+            message = "INSERT INTO doctors (\"firstName\", \"lastName\", \"pagerNumber\", \"email\") values " +
+                    "('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
             s.execute(message);
 
         }catch(SQLException e){
@@ -97,12 +138,12 @@ public class DBInterface {
         try {
             Gson gson = new Gson();
             String MCData = data.toString();
-            medicalCentre m = gson.fromJson(MCData, medicalCentre.class);
+            medicalCentre mc = gson.fromJson(MCData, medicalCentre.class);
             System.out.println(MCData);
 
             String message;
-            message = "INSERT INTO medicalcentre (name, address) values ('"+m.name+"', '"+m.address+"');";
-          //  INSERT INTO medicalCentre (name, address) values ('hello', 'medicalcentre');
+            message = "INSERT INTO medicalcentre (name, address) values ('"+mc.name+"', '"+mc.address+"');";
+            System.out.println(mc.name);
             s.execute(message);
 
         }catch(SQLException e){
