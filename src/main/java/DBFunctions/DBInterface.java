@@ -10,6 +10,8 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBInterface {
 
@@ -33,6 +35,8 @@ public class DBInterface {
 
         try {
             Class.forName("org.postgresql.Driver");
+            Connection conn = DriverManager.getConnection(dbUrl, "postgres", "Chhoopnege2k22");
+            s = conn.createStatement();
             conn = DriverManager.getConnection(dbUrl, "postgres", "12345678");
             Statement s = conn.createStatement();
             System.out.println("Local connection open");
@@ -67,6 +71,80 @@ public class DBInterface {
         return false;
     }
 
+    public static ArrayList<Patient> getPatient(JSONObject data) throws SQLException {
+        new DBInterface();
+        ArrayList<Patient> output= new ArrayList();
+        try {
+            Gson gson = new Gson();
+            String patientData = data.toString();
+            Patient p = gson.fromJson(patientData, Patient.class);
+            String message = "select * from patients where \"lastname\" = '" + p.lastName +
+                    "' and \"firstname\" = '"+p.firstName+"';";
+            s.execute(message);
+
+            ResultSet rset = s.executeQuery(message);
+            while(rset.next()) {
+                Patient newP = new Patient(rset.getString("firstname"), rset.getString("lastname"),
+                        rset.getString("phonenum"), rset.getString("address"), rset.getString("dob"),
+                        rset.getString("email"));
+                System.out.println(newP.firstName);
+                System.out.println(newP.lastName);
+                output.add(newP);
+            }
+        }
+        catch(SQLException e) {
+            System.out.println("Error while executing SQL function in getPatient");
+            e.printStackTrace();
+            }
+        return output;
+    }
+
+    public static void getDoctor(JSONObject data) throws SQLException {
+        new DBInterface();
+        try {
+            Gson gson = new Gson();
+            String doctorData = data.toString();
+            Doctor d = gson.fromJson(doctorData, Doctor.class);
+            String message = "select * from doctors where \"lastName\" = '" + d.lastName +
+                   "'and \"firstName\" = '"+d.firstName+"';";
+            s.execute(message);
+
+            ResultSet rset = s.executeQuery(message);
+            while(rset.next()) {
+                Doctor newD = new Doctor(rset.getString("firstName"), rset.getString("lastName"),
+                        rset.getString("pagerNumber"), rset.getString("email"));
+                System.out.println(newD.firstName);
+                System.out.println(newD.lastName);
+            }
+        }
+        catch(SQLException e) {
+            System.out.println("Error while executing SQL function in addPatient");
+            e.printStackTrace();
+        }
+    }
+
+    public static void getMC(JSONObject data) throws SQLException {
+        System.out.println("i got here");
+        new DBInterface();
+        try {
+            Gson gson = new Gson();
+            String MCData = data.toString();
+            medicalCentre mc = gson.fromJson(MCData, medicalCentre.class);
+            String message = "select * from medicalcentre where \"name\" = '" + mc.name +"';";
+            s.execute(message);
+
+            ResultSet rset = s.executeQuery(message);
+            while(rset.next()) {
+                medicalCentre newMC = new medicalCentre(rset.getString("name"), rset.getString("address"));
+                System.out.println(newMC.name);
+                System.out.println(newMC.address);
+            }
+        }
+        catch(SQLException e) {
+            System.out.println("Error while executing SQL function in addPatient");
+            e.printStackTrace();
+        }
+    }
     private void createTables(){
         System.out.println("Creating tables...");
         if(!tableExists("patients")){
@@ -111,12 +189,14 @@ public class DBInterface {
             Gson gson = new Gson();
             String patientData = data.toString();
             Patient p = gson.fromJson(patientData, Patient.class);
+            System.out.println(patientData);
 
             String message;
             message = "INSERT INTO patients (\"firstname\", \"lastname\", \"phonenum\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
             Statement s = conn.createStatement();
             s.execute(message);
             System.out.println("Added patient with data:" + patientData);
+
 
         }catch(SQLException e){
             System.out.println("Error while executing SQL function in addPatient");
@@ -131,8 +211,9 @@ public class DBInterface {
             Doctor d = gson.fromJson(doctorData, Doctor.class);
 
             String message;
-            message = "INSERT INTO doctors (\"firstname\", \"lastname\", \"pagernum\", \"email\") values ('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
             Statement s = conn.createStatement();
+            message = "INSERT INTO doctors (\"firstName\", \"lastName\", \"pagerNumber\", \"email\") values " +
+                    "('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
             s.execute(message);
             System.out.println("Added doctor with data:" + doctorData);
 
@@ -146,11 +227,12 @@ public class DBInterface {
         try {
             Gson gson = new Gson();
             String MCData = data.toString();
-            medicalCentre m = gson.fromJson(MCData, medicalCentre.class);
+            medicalCentre mc = gson.fromJson(MCData, medicalCentre.class);
+            System.out.println(MCData);
 
             String message;
             message = "INSERT INTO medicalcentres (name, address) values ('"+m.name+"', '"+m.address+"');";
-          //  INSERT INTO medicalCentre (name, address) values ('hello', 'medicalcentre');
+            //  INSERT INTO medicalCentre (name, address) values ('hello', 'medicalcentre');
             Statement s = conn.createStatement();
             s.execute(message);
             System.out.println("Added MC with data:" + MCData);
