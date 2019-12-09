@@ -37,6 +37,19 @@ public class TestDatabase {
     }
      */
 
+    @Test
+    public void testgetDoctor() throws SQLException, JSONException {
+        //  addPatient(JSONObject data)
+        JSONObject doctor = new JSONObject();
+        doctor.put("lastName", "Holloway");
+        doctor.put("firstName", "Martin");
+        try {
+            DBInterface.getDoctor(doctor);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
         @Test
     public void testGetPatient() throws SQLException, JSONException {
         //  addPatient(JSONObject data)
@@ -58,19 +71,6 @@ public class TestDatabase {
         mc.put("name", "Chelsea Hospital");
         try {
             DBInterface.getMC(mc);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testgetDoctor() throws SQLException, JSONException {
-        //  addPatient(JSONObject data)
-        JSONObject doctor = new JSONObject();
-        doctor.put("lastName", "Holloway");
-        doctor.put("firstName", "Martin");
-        try {
-            DBInterface.getDoctor(doctor);
         } catch (SQLException e) {
             e.printStackTrace();
         }

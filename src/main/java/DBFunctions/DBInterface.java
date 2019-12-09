@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.sql.*;
 
 public class DBInterface {
-
     static Statement s = null;
 
     public DBInterface(){
@@ -35,6 +34,7 @@ public class DBInterface {
             Patient p = gson.fromJson(patientData, Patient.class);
             String message = "select * from patients where \"lastname\" = '" + p.lastName +
                     "' and \"firstname\" = '"+p.firstName+"';";
+            System.out.println(message);
             s.execute(message);
 
             ResultSet rset = s.executeQuery(message);
@@ -76,7 +76,6 @@ public class DBInterface {
     }
 
     public static void getMC(JSONObject data) throws SQLException {
-        System.out.println("i got here");
         new DBInterface();
         try {
             Gson gson = new Gson();

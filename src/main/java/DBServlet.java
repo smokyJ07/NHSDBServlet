@@ -38,7 +38,6 @@ public class DBServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        //System.out.println(reqBody);
         try {
             //parse and decompose json received
             JSONObject reqBodyJson = new JSONObject(reqBody);
