@@ -42,7 +42,9 @@ public class DBInterface {
 
             ResultSet rset = s.executeQuery(message);
             while(rset.next()) {
-                Patient newP = new Patient(rset.getString("firstname"), rset.getString("lastname"), rset.getString("phonenum"), rset.getString("address"), rset.getString("dob"), rset.getString("email"));
+                Patient newP = new Patient(rset.getString("firstname"), rset.getString("lastname"),
+                        rset.getString("phonenum"), rset.getString("address"), rset.getString("dob"),
+                        rset.getString("email"));
                 System.out.println(newP.firstName);
                 System.out.println(newP.lastName);
                 output.add(newP);
