@@ -35,8 +35,6 @@ public class DBInterface {
 
         try {
             Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection(dbUrl, "postgres", "Chhoopnege2k22");
-            s = conn.createStatement();
             conn = DriverManager.getConnection(dbUrl, "postgres", "12345678");
             Statement s = conn.createStatement();
             System.out.println("Local connection open");
@@ -80,6 +78,7 @@ public class DBInterface {
             Patient p = gson.fromJson(patientData, Patient.class);
             String message = "select * from patients where \"lastname\" = '" + p.lastName +
                     "' and \"firstname\" = '"+p.firstName+"';";
+            Statement s = conn.createStatement();
             s.execute(message);
 
             ResultSet rset = s.executeQuery(message);
@@ -107,6 +106,7 @@ public class DBInterface {
             Doctor d = gson.fromJson(doctorData, Doctor.class);
             String message = "select * from doctors where \"lastName\" = '" + d.lastName +
                    "'and \"firstName\" = '"+d.firstName+"';";
+            Statement s = conn.createStatement();
             s.execute(message);
 
             ResultSet rset = s.executeQuery(message);
@@ -131,6 +131,7 @@ public class DBInterface {
             String MCData = data.toString();
             medicalCentre mc = gson.fromJson(MCData, medicalCentre.class);
             String message = "select * from medicalcentre where \"name\" = '" + mc.name +"';";
+            Statement s = conn.createStatement();
             s.execute(message);
 
             ResultSet rset = s.executeQuery(message);
@@ -231,7 +232,7 @@ public class DBInterface {
             System.out.println(MCData);
 
             String message;
-            message = "INSERT INTO medicalcentres (name, address) values ('"+m.name+"', '"+m.address+"');";
+            message = "INSERT INTO medicalcentres (name, address) values ('"+mc.name+"', '"+mc.address+"');";
             //  INSERT INTO medicalCentre (name, address) values ('hello', 'medicalcentre');
             Statement s = conn.createStatement();
             s.execute(message);
