@@ -33,8 +33,8 @@ public class DBInterface {
             Gson gson = new Gson();
             String patientData = data.toString();
             Patient p = gson.fromJson(patientData, Patient.class);
-            String message = "select * from patients where \"lastName\" = '" + p.lastName +
-                    "' and \"firstName\" = '"+p.firstName+"';";
+            String message = "select * from patients where \"lastname\" = '" + p.lastName +
+                    "' and \"firstname\" = '"+p.firstName+"';";
             s.execute(message);
 
             ResultSet rset = s.executeQuery(message);
@@ -57,8 +57,8 @@ public class DBInterface {
             Gson gson = new Gson();
             String doctorData = data.toString();
             Doctor d = gson.fromJson(doctorData, Doctor.class);
-            String message = "select * from doctors where \"lastName\" = '" + d.lastName +
-                   "'and \"firstName\" = '"+d.firstName+"';";
+            String message = "select * from doctors where \"lastname\" = '" + d.lastName +
+                   "'and \"firstname\" = '"+d.firstName+"';";
             s.execute(message);
 
             ResultSet rset = s.executeQuery(message);
@@ -106,7 +106,7 @@ public class DBInterface {
             System.out.println(patientData);
 
             String message;
-            message = "INSERT INTO patients (\"firstName\", \"lastName\", \"phonenumber\", \"address\", \"dob\", \"email\") " +
+            message = "INSERT INTO patients (\"firstname\", \"lastname\", \"phonenumber\", \"address\", \"dob\", \"email\") " +
                     "values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
             s.execute(message);
 
@@ -124,7 +124,7 @@ public class DBInterface {
             System.out.println(doctorData);
 
             String message;
-            message = "INSERT INTO doctors (\"firstName\", \"lastName\", \"pagerNumber\", \"email\") values " +
+            message = "INSERT INTO doctors (\"firstname\", \"lastname\", \"pagernumber\", \"email\") values " +
                     "('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
             s.execute(message);
 
