@@ -70,7 +70,6 @@ public class DBInterface {
     }
 
     public static ArrayList<Patient> getPatient(JSONObject data) throws SQLException {
-        new DBInterface();
         ArrayList<Patient> output= new ArrayList();
         try {
             Gson gson = new Gson();
@@ -99,7 +98,6 @@ public class DBInterface {
     }
 
     public static void getDoctor(JSONObject data) throws SQLException {
-        new DBInterface();
         try {
             Gson gson = new Gson();
             String doctorData = data.toString();
@@ -124,8 +122,6 @@ public class DBInterface {
     }
 
     public static void getMC(JSONObject data) throws SQLException {
-        System.out.println("i got here");
-        new DBInterface();
         try {
             Gson gson = new Gson();
             String MCData = data.toString();

@@ -36,13 +36,13 @@ public class TestDatabase {
           //  Assert.assertThat(s, is(equalTo("select * from patients where lastname = 'Speybrook';")));
     }
      */
-
+/*
     @Test
     public void testgetDoctor() throws SQLException, JSONException {
         //  addPatient(JSONObject data)
         JSONObject doctor = new JSONObject();
-        doctor.put("lastName", "Holloway");
-        doctor.put("firstName", "Martin");
+        doctor.put("lastname", "Holloway");
+        doctor.put("firstname", "Martin");
         try {
             DBInterface.getDoctor(doctor);
         } catch (SQLException e) {
@@ -54,8 +54,8 @@ public class TestDatabase {
     public void testGetPatient() throws SQLException, JSONException {
         //  addPatient(JSONObject data)
         JSONObject person = new JSONObject();
-        person.put("lastName", "Gutierrez");
-        person.put("firstName", "Alejandra");
+        person.put("lastname", "Gutierrez");
+        person.put("firstname", "Alejandra");
         try {
             DBInterface.getPatient(person);
         } catch (SQLException e) {
@@ -75,5 +75,7 @@ public class TestDatabase {
             e.printStackTrace();
         }
     }
+    */
+
 }
 
