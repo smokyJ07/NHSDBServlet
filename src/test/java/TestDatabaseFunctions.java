@@ -1,7 +1,10 @@
+import org.json.JSONException;
 import org.json.JSONObject;
+import com.google.gson.Gson;
 import org.junit.Test;
 import org.junit.Assert;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 import static org.hamcrest.CoreMatchers.is;
@@ -15,6 +18,8 @@ import DBClasses.*;
 import DBFunctions.DBInterface;
 
 //So far (05/12/19): testing DBInterface functions from stage where we have received Json as a string (so no simulation of Httprequest/ response)
+// 9/12/19 : changed it to stage where servlet has extracted 'data' string from the customjson string: inout argument for all functions = data string
+// in TestdoPost : will test the extracting part later
 
 public class TestDatabaseFunctions {
 
@@ -22,35 +27,33 @@ public class TestDatabaseFunctions {
     @Test
     public void TestaddPatient() {
         //create new JSON Object = simulate the one we would receive from server
-        String receivedString="{\"data\":{\"firstName\":\"Alexandre\",\"lastName\":\"Orsini\",\"address\":\"11 Avenue Auguste Renoir\",\"dob\":\"10/01/2005\",\"phoneNum\":\"+33645464748\",\"email\":\"alex.orsini@gmail.com\"},\"function\":\"addPatient\"}";
+        String receivedString="\"firstName\":\"Alexandre\",\"lastName\":\"Orsini\",\"address\":\"11 Avenue Auguste Renoir\",\"dob\":\"10/01/2005\",\"phoneNum\":\"+33645464748\",\"email\":\"alex.orsini@gmail.com\"";
         try{
-        JSONObject receivedJson = new JSONObject(receivedString);
-
-        String function = (String) receivedJson.get("function");
-        JSONObject data = (JSONObject) receivedJson.get("data");
-        //execute correct function
+        JSONObject receivedJsondata = new JSONObject(receivedString);
         DBInterface dbInterface = new DBInterface();
-        if (function.equals("addPatient")){
-            dbInterface.addPatient(data);
-            System.out.println("addPatient called");
-        }
-        else if(function.equals("addDoctor")){
-            dbInterface.addDoctor(data);
-            System.out.println("addDoctor called");
-        }
-        else if(function.equals("addMC")){
-            dbInterface.addMC(data);
-            System.out.println("addMC called");
-        }
-        else{
-            System.out.println("No matching function found!");
-        }
+        dbInterface.addPatient(receivedJsondata);
         }catch(Exception e){
         System.out.println("Exception occured while parsing JSON.");
         }
-
-
-
+    }
+    @Test
+    public void TestgetPatient(){
+        try{
+        JSONObject testjsondata = new JSONObject();
+            testjsondata.put("firstName", "Alexandre");
+            testjsondata.put("lastName", "Orsini");
+            testjsondata.put("phoneNum", "+33645464748");
+            testjsondata.put("address", "11 Avenue Auguste Renoir");
+            testjsondata.put("email", "alex.orsini@gmail.com");
+            testjsondata.put("dob", "10/10/2005");
+            DBInterface dbinterface= new DBInterface();
+            dbinterface.getPatient(testjsondata);
+            Assert.assertEquals(dbinterface.getPatient(testjsondata).get(0).firstName,"Alexandre");
+        }
+        catch(SQLException | JSONException e) {
+            System.out.println("Error while executing SQL function in getPatient");
+            e.printStackTrace();
+        }
     }
 
 }

@@ -34,18 +34,6 @@ public class DBServlet extends HttpServlet {
         resp.setContentType("text/html");
         String message = "Hello, World!";
         resp.getWriter().write(message);
-
-        ResultSet rset = null;
-        try {
-            rset = getPatient("Gutierrez");
-            String message1 = "Hello, World!";
-            resp.getWriter().write(message1);
-            while(rset.next()){
-                resp.getWriter().write(rset.getInt("id")+" "+ rset.getString("lastName"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -68,35 +56,20 @@ public class DBServlet extends HttpServlet {
             else if(function.equals("addMC")){
                 dbInterface.addMC(data);
             }
+            else if(function.equals("getPatient")){
+                dbInterface.getPatient(data);
+            }
+            else if(function.equals("getMC")){
+                dbInterface.getMC(data);
+            }
+            else if(function.equals("getMC")){
+                dbInterface.getDoctor(data);
+            }
             else{
                 System.out.println("No matching function found!");
             }
-
-
         }catch(Exception e){
             System.out.println("Exception occured while parsing JSON.");
         }
     }
-
-
-    public static ResultSet getPatient(String lastname) throws SQLException {
-        initDatabaseConnection();
-        String message;
-        message = "select * from patients where \"lastName\" = '"+lastname+"';";
-        s.execute(message);
-
-        ResultSet rset=s.executeQuery(message);
-        while(rset.next()){
-            System.out.println(rset.getInt("id")+" "+ rset.getString("lastName"));
-        }
-        return rset;
-    }
-
-    public static void modPatient(int id, String parameter, String newvalue) throws SQLException {
-        initDatabaseConnection();
-        String message;
-        message = "update patients set "+parameter+"='"+newvalue+"' where id="+id+";";
-        s.execute(message);
-    }
-
 }
