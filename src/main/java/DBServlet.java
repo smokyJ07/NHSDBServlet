@@ -34,6 +34,7 @@ public class DBServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }*/
+        dbInterface.closeConnection();
     }
 
     @Override
