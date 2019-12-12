@@ -84,3 +84,22 @@ create table linkpatientdoctormedcentre (
                                  medcentreid int NOT NULL
 );
 
+create table casereports(
+                        id serial primary key,
+                        patientid INT NOT NULL,
+                        doctorid INT NOT NULL,
+                        datetime TIMESTAMP,
+                        casenotes TEXT,
+                        chronic_condition BOOLEAN NOT NULL
+                        );
+
+create table medication(
+                        id serial primary key,
+                        casereportid INT NOT NULL,
+                        start TIMESTAMP,
+                        end TIMESTAMP,
+                        type varchar(128)
+                        );
+
+
+
