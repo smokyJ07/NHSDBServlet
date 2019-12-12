@@ -39,6 +39,7 @@ getPatients (Server -> Client):
 {"function":"getPatients",
  "data":[
     {
+        "id":"...",
         "name":"...",
         "address":"...",
         "dob":"...",
@@ -51,6 +52,22 @@ getPatients (Server -> Client):
     {however many ...}
     ]
 }
+
+addCaseReport (Client -> Server):
+{"function":"addCaseReport,
+ "data":{
+            "casereport":   {
+                            "casenotes":"...",
+                            "chronic_condition":"...",
+                            "patient_id":"..."
+                            }
+            "medication":   {
+                            "starttime":"...",
+                            "endtime":"...",
+                            "type":"...",
+                            }
+        }
+ }
 
 
 DATABASE reference spelling conventions:
@@ -77,11 +94,10 @@ create table medicalcentre(
                             address varchar(128)
 );
 
-create table linkpatientdoctormedcentre (
+create table patientofdoctor (
                                  id serial primary key,
                                  patientid int NOT NULL,
-                                 doctorid int NOT NULL,
-                                 medcentreid int NOT NULL
+                                 doctorid int NOT NULL
 );
 
 create table casereports(
@@ -96,8 +112,8 @@ create table casereports(
 create table medication(
                         id serial primary key,
                         casereportid INT NOT NULL,
-                        start TIMESTAMP,
-                        end TIMESTAMP,
+                        starttime TIMESTAMP,
+                        endtime TIMESTAMP,
                         type varchar(128)
                         );
 
