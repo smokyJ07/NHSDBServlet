@@ -23,6 +23,7 @@ public class DBInterface {
             System.out.println("Connection open");
 
             createTables();
+            s.close();
         }catch(Exception e){
             e.printStackTrace();
             System.out.println("Connection failed");
@@ -38,6 +39,8 @@ public class DBInterface {
             System.out.println("Local connection open");
 
             createTables();
+            s.close();
+            conn.close();
         }catch (Exception e) {
             System.out.println("Local connection failed");
             e.printStackTrace();
@@ -50,6 +53,15 @@ public class DBInterface {
         return DriverManager.getConnection(dbUrl);
     }
 
+    public void closeConnection() {
+        try {
+            conn.close();
+        }catch(SQLException e){
+            System.out.println("Connection could'nt be closed.");
+            e.printStackTrace();
+        }
+    }
+
     private boolean tableExists(String tableName){
         try {
             String queryMessage = String.format("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '%s');", tableName);
@@ -60,6 +72,8 @@ public class DBInterface {
                 result = rset.getBoolean("exists");
                 System.out.println(result);
             }
+            rset.close();
+            s.close();
             return result;
         }catch(SQLException e){
             e.printStackTrace();
@@ -77,6 +91,7 @@ public class DBInterface {
                         "lastname varchar(128) NOT NULL, phonenum varchar(32), address varchar (128), " +
                         "dob varchar(128), email varchar(128))";
                 s.execute(sql);
+                s.close();
             }catch(SQLException e){
                 e.printStackTrace();
             }
@@ -88,6 +103,7 @@ public class DBInterface {
                 String sql = "create table doctors(id SERIAL PRIMARY KEY, firstname varchar(128) NOT NULL, " +
                         "lastname varchar(128) NOT NULL, pagernum varchar(32), email varchar(128))";
                 s.execute(sql);
+                s.close();
             }catch(SQLException e){
                 e.printStackTrace();
             }
@@ -99,6 +115,7 @@ public class DBInterface {
                 String sql = "create table medicalcentres(id SERIAL PRIMARY KEY, name varchar(128) NOT NULL, " +
                         "address varchar (128))";
                 s.execute(sql);
+                s.close();
             }catch(SQLException e){
                 e.printStackTrace();
             }
@@ -116,6 +133,7 @@ public class DBInterface {
             message = "INSERT INTO patients (\"firstname\", \"lastname\", \"phonenum\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
             Statement s = conn.createStatement();
             s.execute(message);
+            s.close();
             System.out.println("Added patient with data:" + patientData);
 
         }catch(SQLException e){
@@ -134,6 +152,7 @@ public class DBInterface {
             message = "INSERT INTO doctors (\"firstname\", \"lastname\", \"pagernum\", \"email\") values ('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
             Statement s = conn.createStatement();
             s.execute(message);
+            s.close();
             System.out.println("Added doctor with data:" + doctorData);
 
         }catch(SQLException e){
@@ -153,6 +172,7 @@ public class DBInterface {
           //  INSERT INTO medicalCentre (name, address) values ('hello', 'medicalcentre');
             Statement s = conn.createStatement();
             s.execute(message);
+            s.close();
             System.out.println("Added MC with data:" + MCData);
 
         }catch(SQLException e){

@@ -59,6 +59,7 @@ public class DBServlet extends HttpServlet {
             else{
                 System.out.println("No matching function found!");
             }
+            dbInterface.closeConnection();
 
 
         }catch(Exception e){
