@@ -6,6 +6,7 @@ import DBClasses.Patient;
 import DBClasses.medicalCentre;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,7 +18,7 @@ import java.util.List;
 public class DBInterface {
 
     static Connection conn = null;
-
+    static Statement s = null;
     public DBInterface(){
 
         //connection to heroku online postgresql DB
@@ -34,20 +35,16 @@ public class DBInterface {
         }*/
 
         //use this to connect to your local db: note to change password and username to whatever you use
+
         String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
         try {
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection(dbUrl, "postgres", "12345678");
-            Statement s = conn.createStatement();
-            System.out.println("Local connection open");
-
-            createTables();
-            s.close();
-            conn.close();
-        } catch (Exception e) {
-            System.out.println("Local connection failed");
-            e.printStackTrace();
+            Connection conn = DriverManager.getConnection(dbUrl, "postgres", "aleseb99");
+            s = conn.createStatement();
+        }catch (Exception e) {
+            System.out.println(e);
+            String l=e.getMessage();
         }
     }
 
@@ -84,48 +81,38 @@ public class DBInterface {
         return false;
     }
 
-    public static void getPatients(JSONObject data) throws SQLException {
-        ArrayList<Patient> output = new ArrayList();
+    public static String getPatients(JSONObject data) throws SQLException, URISyntaxException {
+        new DBInterface();
+        //getConnection();
+        //ArrayList<Patient> list = new ArrayList<>();
+        JSONArray myArray = new JSONArray();
         try {
-            // Gson gson = new Gson();
-            //Patient p = gson.fromJson(patientData, Patient.class);
-            ArrayList<Class> list = new ArrayList<Class>();
-            String patientData = data.toString();
-            String fName = data.getString("firstName");
-            String lName = data.getString("lastName");
+            String Name = data.getString("name");
 
-            System.out.println(lName);
-            System.out.println(fName);
-            System.out.println(patientData);
 
-            String message = "select * from patients where \"lastname\" = '" + lName +
-                    "' and \"firstname\" = '" + fName + "';";
+            String message = "select * from patients where \"name\" = '" + Name + "';";
 
-            Statement s = conn.createStatement();
             s.execute(message);
-
-            Array listPatients;
             ResultSet rset = s.executeQuery(message);
+            System.out.println("hello");
             while (rset.next()) {
-                Patient newP = new Patient(rset.getString("firstname"), rset.getString("lastname"),
-                        rset.getString("phonenum"), rset.getString("address"), rset.getString("dob"),
-                        rset.getString("email"));
-
-                list.add(NewP.Class);
+                JSONObject patient = new JSONObject();
+                patient.put("name", rset.getString("name"));
+                patient.put("phonenumber", rset.getString("phonenumber"));
+                patient.put("address", rset.getString("address"));
+                patient.put("dob", rset.getString("dob"));
+                patient.put("email", rset.getString("email"));
+                myArray.put(patient);
             }
-
-
-            //                listPatients
-//                output.add(newP);
-
-//                System.out.println(newP.firstName);
-//                System.out.println(newP.lastName);
-
         }catch(JSONException e){
             e.printStackTrace();
         }
-        // CustomJson instruction = new CustomJson("getPatient", listPatients);
-        // return instruction;
+
+        CustomJson instruction = new CustomJson("getPatients", myArray);
+        String message = instruction.toString();
+        System.out.println(message);
+        System.out.println("hello");
+        return message;
     }
 
     public static void getDoctor(JSONObject data) throws SQLException {
@@ -224,7 +211,7 @@ public class DBInterface {
             System.out.println(patientData);
 
             String message;
-            message = "INSERT INTO patients (\"firstname\", \"lastname\", \"phonenum\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
+            message = "INSERT INTO patients (name, \"lastname\", \"phonenum\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
             Statement s = conn.createStatement();
             s.execute(message);
             s.close();

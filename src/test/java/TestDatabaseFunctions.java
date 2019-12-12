@@ -23,22 +23,26 @@ import DBFunctions.DBInterface;
 
 public class TestDatabaseFunctions {
 
-/*
-    @Test
-    public void TestaddPatient() {
-        //create new JSON Object = simulate the one we would receive from server
-        String receivedString="{\"firstName\":\"Alexandre\",\"lastName\":\"Orsini\"," +
-                "\"address\":\"11 Avenue Auguste Renoir\",\"dob\":\"10/01/2005\"," +
-                "\"phoneNum\":\"+33645464748\",\"email\":\"alex.orsini@gmail.com\"}";
-        try{
-        JSONObject receivedJsondata = new JSONObject(receivedString);
-        DBInterface dbInterface = new DBInterface();
-        dbInterface.addPatient(receivedJsondata);
-        }catch(Exception e){
-        System.out.println("Exception occured while parsing JSON.");
-        e.printStackTrace();
-        }
-    }
+
+//    @Test
+//    public void TestaddPatient() {
+//        //create new JSON Object = simulate the one we would receive from server
+//        String receivedString="{\"firstName\":\"Alexandre\",\"lastName\":\"Orsini\"," +
+//                "\"address\":\"11 Avenue Auguste Renoir\",\"dob\":\"10/01/2005\"," +
+//                "\"phoneNum\":\"+33645464748\",\"email\":\"alex.orsini@gmail.com\"}";
+//
+//        try{
+//            JSONObject receivedJsondata = new JSONObject(receivedString);
+//            DBInterface dbInterface = new DBInterface();
+//            dbInterface.addPatient(receivedJsondata);
+//
+//        }catch(Exception e){
+//            System.out.println("Exception occurred while parsing JSON.");
+//            e.printStackTrace();
+//        }
+//    }
+
+    /*
     @Test
     public void TestgetPatient(){
         try{

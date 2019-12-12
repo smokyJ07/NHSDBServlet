@@ -58,7 +58,7 @@ public class DBServlet extends HttpServlet {
                 dbInterface.addMC(data);
             }
             else if(function.equals("getPatient")){
-                dbInterface.getPatient(data);
+                dbInterface.getPatients(data);
             }
             else if(function.equals("getMC")){
                 dbInterface.getMC(data);
