@@ -18,7 +18,7 @@ public class DBInterface {
     static Connection conn = null;
 
     public DBInterface(){
-        //connection to heroku online postgresql db
+        //connection to heroku online postgresql DB
         /*try{
             conn = getConnection();
             Statement s = conn.createStatement();
