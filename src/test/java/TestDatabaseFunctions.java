@@ -23,7 +23,7 @@ import DBFunctions.DBInterface;
 
 public class TestDatabaseFunctions {
 
-/*
+
     @Test
     public void TestaddPatient() {
         //create new JSON Object = simulate the one we would receive from server
@@ -58,5 +58,4 @@ public class TestDatabaseFunctions {
             e.printStackTrace();
         }
     }
-    */
 }
