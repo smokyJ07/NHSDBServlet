@@ -16,8 +16,9 @@ import java.util.stream.Collectors;
 public class DBServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        //System.out.println(reqBody);
+        /*String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        System.out.println(reqBody);
+        resp.setContentType("text/html"); //set type for response
         try {
             //parse and decompose json received
             JSONObject reqBodyJson = new JSONObject(reqBody);
@@ -34,26 +35,9 @@ public class DBServlet extends HttpServlet {
             dbInterface.closeConnection();
         }catch(Exception e){
             System.out.println("Exception occured while parsing JSON.");
-        };
-        resp.setContentType("text/html");
-        String message = "Hello, World!";
-        resp.getWriter().write(message);
-
-        //create our database interface class and try to connect to heroku postgresql db
-        DBInterface dbInterface = new DBInterface();
-
-        /*ResultSet rset = null;
-        try {
-            rset = getPatient("Gutierrez");
-            String message1 = "Hello, World!";
-            resp.getWriter().write(message1);
-            while(rset.next()){
-                resp.getWriter().write(rset.getInt("id")+" "+ rset.getString("lastName"));
-            }
-        } catch (SQLException e) {
             e.printStackTrace();
-        }*/
-        dbInterface.closeConnection();
+        };
+        */
     }
 
     @Override
@@ -76,6 +60,10 @@ public class DBServlet extends HttpServlet {
             else if(function.equals("addMC")){
                 dbInterface.addMC(data);
             }
+            else if(function.equals("getPatients")){
+                resp.setContentType("text/html");
+                resp.getWriter().write(dbInterface.getPatients(data));
+            }
             else{
                 System.out.println("No matching function found!");
             }
@@ -84,6 +72,7 @@ public class DBServlet extends HttpServlet {
 
         }catch(Exception e){
             System.out.println("Exception occured while parsing JSON.");
+            e.printStackTrace();
         };
     }
 }

@@ -20,7 +20,7 @@ public class DBInterface {
 
     public DBInterface(){
         //connection to heroku online postgresql DB
-        /*try{
+        try{
             conn = getConnection();
             Statement s = conn.createStatement();
             System.out.println("Connection open");
@@ -30,10 +30,10 @@ public class DBInterface {
         }catch(Exception e){
             e.printStackTrace();
             System.out.println("Connection failed");
-        }*/
+        }
 
         //use this to connect to your local db: note to change password and username to whatever you use
-        String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+        /*String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -43,11 +43,10 @@ public class DBInterface {
 
             createTables();
             s.close();
-            conn.close();
         }catch (Exception e) {
             System.out.println("Local connection failed");
             e.printStackTrace();
-        }
+        }*/
     }
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
@@ -84,23 +83,17 @@ public class DBInterface {
     }
 
     public static String getPatients(JSONObject data) throws SQLException, URISyntaxException {
-        new DBInterface();
-        //getConnection();
-        //ArrayList<Patient> list = new ArrayList<>();
         JSONArray myArray = new JSONArray();
         try {
             String Name = data.getString("name");
-
-
             String message = "select * from patients where \"name\" = '" + Name + "';";
-
+            Statement s = conn.createStatement();
             s.execute(message);
             ResultSet rset = s.executeQuery(message);
-            System.out.println("hello");
             while (rset.next()) {
                 JSONObject patient = new JSONObject();
                 patient.put("name", rset.getString("name"));
-                patient.put("phonenumber", rset.getString("phonenumber"));
+                patient.put("phoneNum", rset.getString("phonenum"));
                 patient.put("address", rset.getString("address"));
                 patient.put("dob", rset.getString("dob"));
                 patient.put("email", rset.getString("email"));
@@ -109,11 +102,10 @@ public class DBInterface {
         }catch(JSONException e){
             e.printStackTrace();
         }
-
         CustomJson instruction = new CustomJson("getPatients", myArray);
         String message = instruction.toString();
         System.out.println(message);
-        System.out.println("hello");
+
         return message;
     }
 
@@ -229,7 +221,7 @@ public class DBInterface {
 
             String message;
             Statement s = conn.createStatement();
-            message = "INSERT INTO doctors (\"name\", \"pagerNumber\", \"email\") values " +
+            message = "INSERT INTO doctors (\"name\", \"pagernum\", \"email\") values " +
                     "('"+d.name+"','"+d.pagerNum+"', '"+d.email+"');";
             s.execute(message);
             s.close();

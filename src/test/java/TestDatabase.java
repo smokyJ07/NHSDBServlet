@@ -15,18 +15,26 @@ import static junit.framework.TestCase.assertEquals;
 
 
 public class TestDatabase {
-
+    /*
     @Test
     public void testGetPatient() throws SQLException, JSONException {
-        //  addPatient(JSONObject data)
+        DBInterface dbInterface = new DBInterface();
+        JSONObject patient_alejandra = new JSONObject();
+        patient_alejandra.put("name", "Alejandra");
+        patient_alejandra.put("email", "adsadfa");
+        patient_alejandra.put("dob", "07/03/1998");
+        patient_alejandra.put("phonenum", "01238123");
+        patient_alejandra.put("address", "21 Cromwell Road");
+        dbInterface.addPatient(patient_alejandra);
         JSONObject person = new JSONObject();
         person.put("name", "Alejandra");
 
         try {
-            DBInterface.getPatients(person);
+            dbInterface.getPatients(person);
         } catch (SQLException | URISyntaxException e) {
             e.printStackTrace();
         }
+        dbInterface.closeConnection();
     }
 
 
