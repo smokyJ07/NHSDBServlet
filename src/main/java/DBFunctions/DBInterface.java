@@ -97,6 +97,7 @@ public class DBInterface {
                 patient.put("address", rset.getString("address"));
                 patient.put("dob", rset.getString("dob"));
                 patient.put("email", rset.getString("email"));
+                patient.put("id", rset.getString("id"));
                 myArray.put(patient);
             }
         }catch(JSONException e){
