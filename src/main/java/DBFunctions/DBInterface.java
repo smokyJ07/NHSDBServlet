@@ -1,10 +1,11 @@
 package DBFunctions;
-
+import DBClasses.CustomJson;
 import DBClasses.Doctor;
 import DBClasses.medicalCentre;
 import DBClasses.Patient;
 import DBClasses.medicalCentre;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +19,7 @@ public class DBInterface {
     static Connection conn = null;
 
     public DBInterface(){
+
         //connection to heroku online postgresql DB
         /*try{
             conn = getConnection();
@@ -43,11 +45,10 @@ public class DBInterface {
             createTables();
             s.close();
             conn.close();
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Local connection failed");
             e.printStackTrace();
         }
-
     }
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
@@ -83,32 +84,48 @@ public class DBInterface {
         return false;
     }
 
-    public static ArrayList<Patient> getPatient(JSONObject data) throws SQLException {
-        ArrayList<Patient> output= new ArrayList();
+    public static void getPatients(JSONObject data) throws SQLException {
+        ArrayList<Patient> output = new ArrayList();
         try {
-            Gson gson = new Gson();
+            // Gson gson = new Gson();
+            //Patient p = gson.fromJson(patientData, Patient.class);
+            ArrayList<Class> list = new ArrayList<Class>();
             String patientData = data.toString();
-            Patient p = gson.fromJson(patientData, Patient.class);
-            String message = "select * from patients where \"lastname\" = '" + p.lastName +
-                    "' and \"firstname\" = '"+p.firstName+"';";
+            String fName = data.getString("firstName");
+            String lName = data.getString("lastName");
+
+            System.out.println(lName);
+            System.out.println(fName);
+            System.out.println(patientData);
+
+            String message = "select * from patients where \"lastname\" = '" + lName +
+                    "' and \"firstname\" = '" + fName + "';";
+
             Statement s = conn.createStatement();
             s.execute(message);
 
+            Array listPatients;
             ResultSet rset = s.executeQuery(message);
-            while(rset.next()) {
+            while (rset.next()) {
                 Patient newP = new Patient(rset.getString("firstname"), rset.getString("lastname"),
                         rset.getString("phonenum"), rset.getString("address"), rset.getString("dob"),
                         rset.getString("email"));
-                System.out.println(newP.firstName);
-                System.out.println(newP.lastName);
-                output.add(newP);
+
+                list.add(NewP.Class);
             }
-        }
-        catch(SQLException e) {
-            System.out.println("Error while executing SQL function in getPatient");
+
+
+            //                listPatients
+//                output.add(newP);
+
+//                System.out.println(newP.firstName);
+//                System.out.println(newP.lastName);
+
+        }catch(JSONException e){
             e.printStackTrace();
-            }
-        return output;
+        }
+        // CustomJson instruction = new CustomJson("getPatient", listPatients);
+        // return instruction;
     }
 
     public static void getDoctor(JSONObject data) throws SQLException {
@@ -156,6 +173,7 @@ public class DBInterface {
             e.printStackTrace();
         }
     }
+
     private void createTables(){
         System.out.println("Creating tables...");
         if(!tableExists("patients")){
@@ -211,8 +229,6 @@ public class DBInterface {
             s.execute(message);
             s.close();
             System.out.println("Added patient with data:" + patientData);
-
-
         }catch(SQLException e){
             System.out.println("Error while executing SQL function in addPatient");
             e.printStackTrace();
