@@ -1,5 +1,5 @@
 package DBFunctions;
-
+import DBClasses.CustomJson;
 import DBClasses.Doctor;
 import DBClasses.medicalCentre;
 import DBClasses.Patient;
@@ -48,7 +48,6 @@ public class DBInterface {
             System.out.println("Local connection failed");
             e.printStackTrace();
         }
-
     }
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
@@ -84,30 +83,38 @@ public class DBInterface {
         return false;
     }
 
-    public static String getPatients(JSONObject data) throws SQLException {
-        ArrayList<Patient> output= new ArrayList();
+    public static String getPatients(JSONObject data) throws SQLException, URISyntaxException {
+        new DBInterface();
+        //getConnection();
+        //ArrayList<Patient> list = new ArrayList<>();
+        JSONArray myArray = new JSONArray();
         try {
-            Gson gson = new Gson();
-            String patientData = data.toString();
-            Patient p = gson.fromJson(patientData, Patient.class);
-            String message = "select * from patients where \"name\" = '" + p.name + "';";
-            Statement s = conn.createStatement();
-            s.execute(message);
+            String Name = data.getString("name");
 
+
+            String message = "select * from patients where \"name\" = '" + Name + "';";
+
+            s.execute(message);
             ResultSet rset = s.executeQuery(message);
-            while(rset.next()) {
-                Patient newP = new Patient(rset.getString("name"),
-                        rset.getString("phonenum"), rset.getString("address"), rset.getString("dob"),
-                        rset.getString("email"));
-                System.out.println(newP.name);
-                output.add(newP);
+            System.out.println("hello");
+            while (rset.next()) {
+                JSONObject patient = new JSONObject();
+                patient.put("name", rset.getString("name"));
+                patient.put("phonenumber", rset.getString("phonenumber"));
+                patient.put("address", rset.getString("address"));
+                patient.put("dob", rset.getString("dob"));
+                patient.put("email", rset.getString("email"));
+                myArray.put(patient);
             }
-        }
-        catch(SQLException e) {
-            System.out.println("Error while executing SQL function in getPatient");
+        }catch(JSONException e){
             e.printStackTrace();
-            }
-        return "hi";
+        }
+
+        CustomJson instruction = new CustomJson("getPatients", myArray);
+        String message = instruction.toString();
+        System.out.println(message);
+        System.out.println("hello");
+        return message;
     }
 
     public static void getDoctor(JSONObject data) throws SQLException {
@@ -152,6 +159,7 @@ public class DBInterface {
             e.printStackTrace();
         }
     }
+
     private void createTables(){
         System.out.println("Creating tables...");
         if(!tableExists("patients")){
@@ -207,8 +215,6 @@ public class DBInterface {
             s.execute(message);
             s.close();
             System.out.println("Added patient with data:" + patientData);
-
-
         }catch(SQLException e){
             System.out.println("Error while executing SQL function in addPatient");
             e.printStackTrace();
