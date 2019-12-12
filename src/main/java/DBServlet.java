@@ -45,33 +45,45 @@ public class DBServlet extends HttpServlet {
         String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         //System.out.println(reqBody);
         try {
-            //parse and decompose json received
+            //Parse and decompose json received
             JSONObject reqBodyJson = new JSONObject(reqBody);
             String function = (String) reqBodyJson.get("function");
             JSONObject data = (JSONObject) reqBodyJson.get("data");
-            //execute correct function
+
+            //Execute correct function
             DBInterface dbInterface = new DBInterface();
             if (function.equals("addPatient")){
                 dbInterface.addPatient(data);
             }
-            else if(function.equals("addDoctor")){
+            else if(function.equals("addDoctor")) {
                 dbInterface.addDoctor(data);
             }
             else if(function.equals("addMC")){
                 dbInterface.addMC(data);
             }
+            else if(function.equals("addCase")){
+                resp.setContentType("text.html");
+                dbInterface.addCase(data);
+            }
             else if(function.equals("getPatients")){
                 resp.setContentType("text/html");
                 resp.getWriter().write(dbInterface.getPatients(data));
+            }
+            else if(function.equals("getDoctors")){
+                resp.setContentType("text/html");
+                resp.getWriter().write(dbInterface.getDoctor(data));
+            }
+            else if(function.equals("getMC")){
+                resp.setContentType("text/html");
+                resp.getWriter().write(dbInterface.getMC(data));
             }
             else{
                 System.out.println("No matching function found!");
             }
             dbInterface.closeConnection();
 
-
         }catch(Exception e){
-            System.out.println("Exception occured while parsing JSON.");
+            System.out.println("Exception occurred while parsing JSON.");
             e.printStackTrace();
         };
     }
