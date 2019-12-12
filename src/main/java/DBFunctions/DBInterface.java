@@ -5,6 +5,7 @@ import DBClasses.medicalCentre;
 import DBClasses.Patient;
 import DBClasses.medicalCentre;
 import com.google.gson.Gson;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -83,24 +84,22 @@ public class DBInterface {
         return false;
     }
 
-    public static ArrayList<Patient> getPatient(JSONObject data) throws SQLException {
+    public static String getPatients(JSONObject data) throws SQLException {
         ArrayList<Patient> output= new ArrayList();
         try {
             Gson gson = new Gson();
             String patientData = data.toString();
             Patient p = gson.fromJson(patientData, Patient.class);
-            String message = "select * from patients where \"lastname\" = '" + p.lastName +
-                    "' and \"firstname\" = '"+p.firstName+"';";
+            String message = "select * from patients where \"name\" = '" + p.name + "';";
             Statement s = conn.createStatement();
             s.execute(message);
 
             ResultSet rset = s.executeQuery(message);
             while(rset.next()) {
-                Patient newP = new Patient(rset.getString("firstname"), rset.getString("lastname"),
+                Patient newP = new Patient(rset.getString("name"),
                         rset.getString("phonenum"), rset.getString("address"), rset.getString("dob"),
                         rset.getString("email"));
-                System.out.println(newP.firstName);
-                System.out.println(newP.lastName);
+                System.out.println(newP.name);
                 output.add(newP);
             }
         }
@@ -108,7 +107,7 @@ public class DBInterface {
             System.out.println("Error while executing SQL function in getPatient");
             e.printStackTrace();
             }
-        return output;
+        return "hi";
     }
 
     public static void getDoctor(JSONObject data) throws SQLException {
@@ -116,17 +115,14 @@ public class DBInterface {
             Gson gson = new Gson();
             String doctorData = data.toString();
             Doctor d = gson.fromJson(doctorData, Doctor.class);
-            String message = "select * from doctors where \"lastName\" = '" + d.lastName +
-                   "'and \"firstName\" = '"+d.firstName+"';";
+            String message = "select * from doctors where \"name\" = '"+d.name+"';";
             Statement s = conn.createStatement();
             s.execute(message);
 
             ResultSet rset = s.executeQuery(message);
             while(rset.next()) {
-                Doctor newD = new Doctor(rset.getString("firstName"), rset.getString("lastName"),
-                        rset.getString("pagerNumber"), rset.getString("email"));
-                System.out.println(newD.firstName);
-                System.out.println(newD.lastName);
+                Doctor newD = new Doctor(rset.getString("nae"), rset.getString("pagerNumber"), rset.getString("email"));
+                System.out.println(newD.name);
             }
         }
         catch(SQLException e) {
@@ -162,8 +158,8 @@ public class DBInterface {
             System.out.println("Creating patients table...");
             try {
                 Statement s = conn.createStatement();
-                String sql = "create table patients(id SERIAL PRIMARY KEY, firstname varchar(128) NOT NULL, " +
-                        "lastname varchar(128) NOT NULL, phonenum varchar(32), address varchar (128), " +
+                String sql = "create table patients(id SERIAL PRIMARY KEY, name varchar(128) NOT NULL, " +
+                        "phonenum varchar(32), address varchar (128), " +
                         "dob varchar(128), email varchar(128))";
                 s.execute(sql);
                 s.close();
@@ -175,8 +171,8 @@ public class DBInterface {
             System.out.println("Creating doctors table...");
             try {
                 Statement s = conn.createStatement();
-                String sql = "create table doctors(id SERIAL PRIMARY KEY, firstname varchar(128) NOT NULL, " +
-                        "lastname varchar(128) NOT NULL, pagernum varchar(32), email varchar(128))";
+                String sql = "create table doctors(id SERIAL PRIMARY KEY, name varchar(128) NOT NULL, " +
+                        "pagernum varchar(32), email varchar(128))";
                 s.execute(sql);
                 s.close();
             }catch(SQLException e){
@@ -206,7 +202,7 @@ public class DBInterface {
             System.out.println(patientData);
 
             String message;
-            message = "INSERT INTO patients (\"firstname\", \"lastname\", \"phonenum\", \"address\", \"dob\", \"email\") values ('"+p.firstName+"', '"+p.lastName+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
+            message = "INSERT INTO patients (\"name\", \"phonenum\", \"address\", \"dob\", \"email\") values ('"+p.name+"','"+p.phoneNum+"','"+p.address+"','"+p.dob+"' ,'"+p.email+"');";
             Statement s = conn.createStatement();
             s.execute(message);
             s.close();
@@ -227,8 +223,8 @@ public class DBInterface {
 
             String message;
             Statement s = conn.createStatement();
-            message = "INSERT INTO doctors (\"firstName\", \"lastName\", \"pagerNumber\", \"email\") values " +
-                    "('"+d.firstName+"', '"+d.lastName+"','"+d.pagerNum+"', '"+d.email+"');";
+            message = "INSERT INTO doctors (\"name\", \"pagerNumber\", \"email\") values " +
+                    "('"+d.name+"','"+d.pagerNum+"', '"+d.email+"');";
             s.execute(message);
             s.close();
             System.out.println("Added doctor with data:" + doctorData);

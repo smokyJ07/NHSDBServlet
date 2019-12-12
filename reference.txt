@@ -5,8 +5,7 @@ JSONs:
 addPatient:
 {"function":"addPatient",
  "data":{
-    "firstName":"...",
-    "lastName":"...",
+    "name":"...",
     "address":"...",
     "dob":"...",
     "phoneNum":"...",
@@ -17,8 +16,7 @@ addPatient:
 addDoctor:
 {"function":"addDoctor",
  "data":{
-    "firstName":"...",
-    "lastName":"...",
+    "name":"...",
     "pagerNumber":"...",
     "email":"..."
     }
@@ -34,18 +32,14 @@ addMC:
 
 getPatients (Client -> Server):
 {"function":"getPatients",
- "data":{
-    "firstName":"...",
-    "lastName":"..."
-    }
+ "data":"... -> in this case the inputted name"
 }
 
 getPatients (Server -> Client):
 {"function":"getPatients",
  "data":[
     {
-        "firstName":"...",
-        "lastName":"...",
+        "name":"...",
         "address":"...",
         "dob":"...",
         "phoneNum":"...",
@@ -63,8 +57,7 @@ DATABASE reference spelling conventions:
 
 create table patients (
                           id SERIAL PRIMARY KEY,
-                          firstname varchar(128) NOT NULL,
-                          lastname varchar(128) NOT NULL,
+                          name varchar(128) NOT NULL,
                           phonenum varchar(32),
                           address varchar (128),
                           dob varchar(128),
@@ -73,8 +66,7 @@ create table patients (
 
 create table doctors (
                           id SERIAL PRIMARY KEY,
-                          firstname varchar(128) NOT NULL,
-                          lastname varchar(128) NOT NULL,
+                          name varchar(128) NOT NULL,
                           pagernum varchar(32),
                           email varchar(128)
 );

@@ -16,6 +16,25 @@ import java.util.stream.Collectors;
 public class DBServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        //System.out.println(reqBody);
+        try {
+            //parse and decompose json received
+            JSONObject reqBodyJson = new JSONObject(reqBody);
+            String function = (String) reqBodyJson.get("function");
+            JSONObject data = (JSONObject) reqBodyJson.get("data");
+            //execute correct function
+            DBInterface dbInterface = new DBInterface();
+            if (function.equals("getPatients")){
+                resp.getWriter().write(dbInterface.getPatients(data));
+            }
+            else{
+                System.out.println("No matching function found!");
+            }
+            dbInterface.closeConnection();
+        }catch(Exception e){
+            System.out.println("Exception occured while parsing JSON.");
+        };
         resp.setContentType("text/html");
         String message = "Hello, World!";
         resp.getWriter().write(message);
@@ -56,15 +75,6 @@ public class DBServlet extends HttpServlet {
             }
             else if(function.equals("addMC")){
                 dbInterface.addMC(data);
-            }
-            else if(function.equals("getPatient")){
-                dbInterface.getPatient(data);
-            }
-            else if(function.equals("getMC")){
-                dbInterface.getMC(data);
-            }
-            else if(function.equals("getMC")){
-                dbInterface.getDoctor(data);
             }
             else{
                 System.out.println("No matching function found!");
