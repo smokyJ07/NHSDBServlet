@@ -77,26 +77,41 @@ public class TestDatabase {
 
     @Test
     public void testCases() throws SQLException, JSONException {
+        // VERY USEFUL LINK
+        // http://www.objgen.com/json
+
         String cases = "{\n" +
-                "  \"case\": {\n" +
-                    "    \"casereport\": {\n" +
-                        "      \"patient_id\": \"1\",\n" +
-                        "      \"doctor_id\": \"1\",\n" +
-                        "      \"casenotes\": \"Mr. is sick\",\n" +
-                        "      \"chronic_condition\": \"0\",\n" +
-                        "      \"datetime\": \"1999-01-08\"\n" +
-                        "    },\n" +
-                    "    \"medication\": {\n" +
-                        "      \"casereportid\": \"1\",\n" +
-                        "      \"starttime\": \"12.12.12\",\n" +
-                        "      \"endtime\": \"13.13.13\",\n" +
-                        "      \"type\": \"ibuprofene\"\n" +
-                        "    }\n" +
-                "  }\n" +
+                "  \"casereport\": {\n" +
+                "    \"patient_id\": \"1\",\n" +
+                "    \"doctor_id\": \"1\",\n" +
+                "    \"casenotes\": \"\\\"mega ill\\\"\",\n" +
+                "    \"chronic_condition\": \"1\",\n" +
+                "    \"datetime\": \"12-12-2019\"\n" +
+                "  },\n" +
+                "  \"medications\": [\n" +
+                "    {\n" +
+                "      \"casereportid\": \"1\",\n" +
+                "      \"startime\": \"1\",\n" +
+                "      \"endtime\": \"1\",\n" +
+                "      \"type\": \"xanax\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"casereportid\": \"1\",\n" +
+                "      \"startime\": \"2\",\n" +
+                "      \"endtime\": \"2\",\n" +
+                "      \"type\": \"xanny\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"casereportid\": \"1\",\n" +
+                "      \"startime\": \"2\",\n" +
+                "      \"endtime\": \"2\",\n" +
+                "      \"type\": \"sleepingpill\"\n" +
+                "    }\n" +
+                "  ]\n" +
                 "}";
 
         JSONObject Object = new JSONObject(cases);
-        System.out.println(Object);
+        //System.out.println(Object);
         DBInterface.addCase(Object);
 
     }

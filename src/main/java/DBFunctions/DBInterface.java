@@ -306,45 +306,44 @@ public class DBInterface {
     public static void addCase(JSONObject data) throws SQLException {
         new DBInterface();
         try{
-        String First = data.getString("case");
-        JSONObject Object1 = new JSONObject(First);
-
-        String cas = Object1.getString("casereport");
-        String med = Object1.getString("medication");
-
-        Gson gson = new Gson();
-        CaseReport cases = gson.fromJson(cas, CaseReport.class);
-
-        Gson gson1 = new Gson();
-        Medication medication = gson1.fromJson(med, Medication.class);
+            Statement s = conn.createStatement();
 
 
-        String message = "INSERT INTO casereports (patientid, doctorid , casenotes, chronic_condition, datetime)"+
-                " values ('"+cases.patientid+"', '"+cases.doctorid+"', '" +cases.casenotes+"', '"+
-                cases.chronic_condition+"', '"+cases.datetime+"');";
+            String cas = data.getString("casereport");
 
-        String message1 = "INSERT INTO medication (casereportid, starttime, endtime, type)"+
-                    " values ( '1', '"+medication.starttime+"', '"+medication.endtime+"', '"
-                    +medication.type+"');";
+            Gson gson = new Gson();
+            CaseReport cases = gson.fromJson(cas, CaseReport.class);
 
-        Statement s = conn.createStatement();
-        s.execute(message);
+            String message = "INSERT INTO casereports (patientid, doctorid , casenotes, chronic_condition, datetime)"+
+                    " values ('"+cases.patientid+"', '"+cases.doctorid+"', '" +cases.casenotes+"', '"+
+                    cases.chronic_condition+"', '"+cases.datetime+"');";
+
+            s.execute(message);
             System.out.println(message);
-            System.out.println(message1);
-        s.execute(message1);
+// ------------------------
+            JSONArray med = data.getJSONArray("medications");
+            String message1="";
 
-        s.close();
 
-        //TO DO: USE INNER JOIN IN ORDER TO COMMUNICATE BETWEEN TWO TABLES.
+            for (int i = 0; i < med.length(); i++) {
+                JSONObject newmed = med.getJSONObject(i);
+
+                Medication mediS = gson.fromJson(String.valueOf(newmed), Medication.class);
+                message1 = "INSERT INTO medication (casereportid, starttime, endtime, type)"+
+                    " values ( '1', '"+mediS.starttime+"', '"+mediS.endtime+"', '"
+                    +mediS.type+"');";
+                s.execute(message1);
+                System.out.println(message1);
+            }
+
+            s.close();
+            // TO DO: USE INNER JOIN IN ORDER TO COMMUNICATE BETWEEN TWO TABLES.
             // https://www.w3schools.com/sql/sql_join_inner.asp
-      //  System.out.println("Added Case with data:" + caseData);
+            // System.out.println("Added Case with data:" + caseData);
 
-    }catch(SQLException | JSONException e){
+    }catch(JSONException e){
         System.out.println("Error while executing SQL function in addMC");
         e.printStackTrace();
     }
     }
-
-
-
 }

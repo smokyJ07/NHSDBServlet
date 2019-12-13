@@ -100,6 +100,3 @@ create table medication(
                         endtime TIMESTAMP,
                         type varchar(128)
                         );
-
-
-
