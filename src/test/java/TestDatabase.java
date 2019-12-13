@@ -22,22 +22,6 @@ import static junit.framework.TestCase.assertEquals;
 
 public class TestDatabase {
 
-    @Test
-    public void testGetPatient() throws SQLException, JSONException {
-        DBInterface dbInterface = new DBInterface();
-
-        JSONObject person = new JSONObject();
-        person.put("name", "Alejandra");
-
-        try {
-            dbInterface.getPatients(person);
-        } catch (SQLException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        dbInterface.closeConnection();
-
-    }
-
     /*@Test
     public void testgetDoctor() throws SQLException, JSONException {
         DBInterface dbInterface = new DBInterface();
@@ -60,7 +44,22 @@ public class TestDatabase {
             e.printStackTrace();
         }
     }*/
+    /*
+    @Test
+    public void testGetPatient() throws SQLException, JSONException {
+        DBInterface dbInterface = new DBInterface();
 
+        JSONObject person = new JSONObject();
+        person.put("name", "Alejandra");
+
+        try {
+            dbInterface.getPatients(person);
+        } catch (SQLException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+        dbInterface.closeConnection();
+
+    }
     @Test
     public void testaddMC() throws SQLException, JSONException {
         DBInterface dbInterface = new DBInterface();
@@ -113,5 +112,7 @@ public class TestDatabase {
         JSONObject Object = new JSONObject(cases);
         dbInterface.addCase(Object);
     }
+
+    */
 }
 
