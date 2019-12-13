@@ -54,20 +54,71 @@ getPatients (Server -> Client):
 }
 
 addCaseReport (Client -> Server):
-{"function":"addCaseReport,
+{"function":"addCaseReport",
  "data":{
             "casereport":   {
-                            "casenotes":"...",
-                            "chronic_condition":"...",
-                            "patient_id":"..."
+                                "casenotes":"...",
+                                "chronic_condition":"...",
+                                "patient_id":"..."
                             }
-            "medication":   {
-                            "starttime":"...",
-                            "endtime":"...",
-                            "type":"...",
-                            }
+            "medications":   [
+                                {
+                                    "starttime":"...",
+                                    "endtime":"...",
+                                    "type":"..."
+                                },
+                                {
+                                    "starttime":"...",
+                                    "endtime":"...",
+                                    "type":"..."
+                                },
+                                {
+                                    add more if necessary
+                                }
+                            ]
+
         }
  }
+
+getCaseReports (Client -> Server)
+{"function":"getCaseReports",
+ "data":"..." -> in this case the patient_id
+}
+
+getCaseReports (Server -> Client)
+{"function":"getCaseReports",
+ "data":    [   {"casereport":  {"id":"...",
+                                 "datetime":"...",
+                                 "chronic_condition":"...",
+                                 "casenotes":"..."
+                                 },
+                 "medications":  [  {"type":"...",
+                                     "starttime":"...",
+                                     "endtime":"..."}
+                                    {"type":"...",
+                                    "starttime":"...",
+                                    "endtime":"..."},
+                                    {as many as needed}
+                                 ]
+                },
+                {"casereport":  {"id":"...",
+                                "datetime":"...",
+                                "chronic_condition":"...",
+                                "casenotes":"..."
+                                },
+                "medications":  [  {"type":"...",
+                                    "starttime":"...",
+                                    "endtime":"..."}
+                                   {"type":"...",
+                                   "starttime":"...",
+                                   "endtime":"..."},
+                                   {as many as needed}
+                                ]
+                },
+                { as many as needed }
+
+            ]
+}
 
 
 DATABASE reference spelling conventions:
