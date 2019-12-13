@@ -17,7 +17,7 @@ public class DBInterface {
 
     public DBInterface(){
         //connection to heroku online postgresql DB
-        /*
+
         try{
             conn = getConnection();
             Statement s = conn.createStatement();
@@ -28,11 +28,11 @@ public class DBInterface {
         }catch(Exception e){
             e.printStackTrace();
             System.out.println("Connection failed");
-        }*/
+        }
 
         //use this to connect to your local db: note to change password and username to whatever you use
         String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
-
+        /*
         try {
             Class.forName("org.postgresql.Driver");
             conn = DriverManager.getConnection(dbUrl, "postgres", "12345678");
@@ -44,7 +44,7 @@ public class DBInterface {
         }catch (Exception e) {
             System.out.println("Local connection failed");
             e.printStackTrace();
-        }
+        }*/
     }
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
