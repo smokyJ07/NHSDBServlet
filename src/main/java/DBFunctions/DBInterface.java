@@ -1,8 +1,5 @@
 package DBFunctions;
-import DBClasses.CustomJson;
-import DBClasses.Doctor;
-import DBClasses.medicalCentre;
-import DBClasses.Patient;
+import DBClasses.*;
 import DBClasses.medicalCentre;
 import com.google.gson.Gson;
 import org.json.JSONArray;
@@ -20,6 +17,7 @@ public class DBInterface {
 
     public DBInterface(){
         //connection to heroku online postgresql DB
+        /*
         try{
             conn = getConnection();
             Statement s = conn.createStatement();
@@ -30,10 +28,10 @@ public class DBInterface {
         }catch(Exception e){
             e.printStackTrace();
             System.out.println("Connection failed");
-        }
+        }*/
 
         //use this to connect to your local db: note to change password and username to whatever you use
-        /*String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+        String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -46,7 +44,7 @@ public class DBInterface {
         }catch (Exception e) {
             System.out.println("Local connection failed");
             e.printStackTrace();
-        }*/
+        }
     }
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
@@ -192,6 +190,31 @@ public class DBInterface {
                 e.printStackTrace();
             }
         }
+        if(!tableExists("medication")){
+            System.out.println("Creating medication table...");
+            try {
+                Statement s = conn.createStatement();
+                String sql = "create table medication(id SERIAL PRIMARY KEY, casereportid INT NOT NULL, " +
+                        "starttime TIMESTAMP, endtime TIMESTAMP, type varchar(128))";
+                s.execute(sql);
+                s.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        if(!tableExists("casereports")){
+            System.out.println("Creating case reports table...");
+            try {
+                Statement s = conn.createStatement();
+                String sql = "create table casereports(id SERIAL PRIMARY KEY, patientid INT NOT NULL, " +
+                        "doctorid INT NOT NULL, datetime TIMESTAMP, casenotes TEXT, chronic_condition BOOLEAN NOT NULL)";
+                s.execute(sql);
+                s.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+
         System.out.println("All required tables exist.");
     }
 
@@ -255,4 +278,47 @@ public class DBInterface {
         }
     }
 
+    public static void addCase(JSONObject data) throws SQLException {
+        try{
+            // --- FOR CASE REPORTS ---//
+            Statement s = conn.createStatement();
+            String cas = data.getString("casereport");
+            Gson gson = new Gson();
+            CaseReport cases = gson.fromJson(cas, CaseReport.class);
+            cases.updateDatetime();
+            String message = "INSERT INTO casereports (patientid, doctorid , casenotes, chronic_condition, datetime)"+
+                    " values ('"+cases.patient_id+"', '"+cases.doctorid+"', '" +cases.casenotes+"', '"+
+                    cases.chronic_condition+"', '"+cases.datetime+"');";
+
+            s.execute(message);
+
+            // --- FOR CASE MEDICATIONS --- //
+            JSONArray med = data.getJSONArray("medications");
+            String message1="";
+
+            String query = "SELECT MAX(id) FROM casereports";
+
+            ResultSet idMax = s.executeQuery(query);
+            int id2 = 0;
+            if ( idMax.next() ){
+                id2 = idMax.getInt(1);
+            }
+            System.out.println(id2);
+
+            for (int i = 0; i < med.length(); i++) {
+                JSONObject newmed = med.getJSONObject(i);
+                Medication mediS = gson.fromJson(newmed.toString(), Medication.class);
+                message1 = "INSERT INTO medication (casereportid, starttime, endtime, type)"+
+                    " values ( '"+id2+"', '"+mediS.starttime+"', '"+mediS.endtime+"', '"
+                    +mediS.type+"');";
+                s.execute(message1);
+            }
+
+            s.close();
+
+    }catch(JSONException e){
+        System.out.println("Error while executing SQL function in addMC");
+        e.printStackTrace();
+    }
+    }
 }

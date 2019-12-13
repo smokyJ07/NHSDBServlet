@@ -61,21 +61,13 @@ public class DBServlet extends HttpServlet {
             else if(function.equals("addMC")){
                 dbInterface.addMC(data);
             }
-            else if(function.equals("addCase")){
+            else if(function.equals("addCaseReport")){
                 resp.setContentType("text.html");
                 dbInterface.addCase(data);
             }
             else if(function.equals("getPatients")){
                 resp.setContentType("text/html");
                 resp.getWriter().write(dbInterface.getPatients(data));
-            }
-            else if(function.equals("getDoctors")){
-                resp.setContentType("text/html");
-                resp.getWriter().write(dbInterface.getDoctor(data));
-            }
-            else if(function.equals("getMC")){
-                resp.setContentType("text/html");
-                resp.getWriter().write(dbInterface.getMC(data));
             }
             else{
                 System.out.println("No matching function found!");

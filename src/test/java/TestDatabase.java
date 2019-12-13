@@ -38,19 +38,19 @@ public class TestDatabase {
 
     }
 
-    @Test
+    /*@Test
     public void testgetDoctor() throws SQLException, JSONException {
-
+        DBInterface dbInterface = new DBInterface();
         JSONObject doctor = new JSONObject();
         doctor.put("name", "Martin");
         try {
-            DBInterface.getDoctor(doctor);
+            dbInterface.getDoctor(doctor);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    @Test
+    /*@Test
     public void testgetMC() throws JSONException {
         JSONObject mc = new JSONObject();
         mc.put("name", "Chelsea Hospital");
@@ -59,18 +59,18 @@ public class TestDatabase {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @Test
     public void testaddMC() throws SQLException, JSONException {
-
+        DBInterface dbInterface = new DBInterface();
         JSONObject mc = new JSONObject();
         mc.put("address", "Kings Road");
         mc.put("name", "Chelsea Hospital");
 
         try {
-            DBInterface.addMC(mc);
-        } catch (SQLException e) {
+            dbInterface.addMC(mc);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -79,11 +79,11 @@ public class TestDatabase {
     public void testCases() throws SQLException, JSONException {
         // VERY USEFUL LINK
         // http://www.objgen.com/json
-
+        DBInterface dbInterface = new DBInterface();
         String cases = "{\n" +
                 "  \"casereport\": {\n" +
-                "    \"patient_id\": \"1\",\n" +
-                "    \"doctor_id\": \"1\",\n" +
+                "    \"patientid\": \"5\",\n" +
+                "    \"doctorid\": \"6\",\n" +
                 "    \"casenotes\": \"\\\"mega ill\\\"\",\n" +
                 "    \"chronic_condition\": \"1\",\n" +
                 "    \"datetime\": \"12-12-2019\"\n" +
@@ -91,27 +91,27 @@ public class TestDatabase {
                 "  \"medications\": [\n" +
                 "    {\n" +
                 "      \"casereportid\": \"1\",\n" +
-                "      \"startime\": \"1\",\n" +
-                "      \"endtime\": \"1\",\n" +
+                "      \"starttime\": \"01-12-2012\",\n" +
+                "      \"endtime\": \"01-12-2012\",\n" +
                 "      \"type\": \"xanax\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"casereportid\": \"1\",\n" +
-                "      \"startime\": \"2\",\n" +
-                "      \"endtime\": \"2\",\n" +
+                "      \"starttime\": \"01-12-2012\",\n" +
+                "      \"endtime\": \"01-12-2012\",\n" +
                 "      \"type\": \"xanny\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"casereportid\": \"1\",\n" +
-                "      \"startime\": \"2\",\n" +
-                "      \"endtime\": \"2\",\n" +
+                "      \"starttime\": \"01-12-2012\",\n" +
+                "      \"endtime\": \"01-12-2012\",\n" +
                 "      \"type\": \"sleepingpill\"\n" +
                 "    }\n" +
                 "  ]\n" +
                 "}";
 
         JSONObject Object = new JSONObject(cases);
-        DBInterface.addCase(Object);
+        dbInterface.addCase(Object);
     }
 }
 
