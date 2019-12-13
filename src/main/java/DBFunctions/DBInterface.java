@@ -17,6 +17,7 @@ public class DBInterface {
 
     public DBInterface(){
         //connection to heroku online postgresql DB
+        /*
         try{
             conn = getConnection();
             Statement s = conn.createStatement();
@@ -27,10 +28,10 @@ public class DBInterface {
         }catch(Exception e){
             e.printStackTrace();
             System.out.println("Connection failed");
-        }
+        }*/
 
         //use this to connect to your local db: note to change password and username to whatever you use
-        /*String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+        String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -43,7 +44,7 @@ public class DBInterface {
         }catch (Exception e) {
             System.out.println("Local connection failed");
             e.printStackTrace();
-        }*/
+        }
     }
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
@@ -189,6 +190,31 @@ public class DBInterface {
                 e.printStackTrace();
             }
         }
+        if(!tableExists("medication")){
+            System.out.println("Creating medication table...");
+            try {
+                Statement s = conn.createStatement();
+                String sql = "create table medication(id SERIAL PRIMARY KEY, casereportid INT NOT NULL, " +
+                        "starttime TIMESTAMP, endtime TIMESTAMP, type varchar(128))";
+                s.execute(sql);
+                s.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        if(!tableExists("casereports")){
+            System.out.println("Creating case reports table...");
+            try {
+                Statement s = conn.createStatement();
+                String sql = "create table casereports(id SERIAL PRIMARY KEY, patientid INT NOT NULL, " +
+                        "doctorid INT NOT NULL, datetime TIMESTAMP, casenotes TEXT, chronic_condition BOOLEAN NOT NULL)";
+                s.execute(sql);
+                s.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+
         System.out.println("All required tables exist.");
     }
 
@@ -259,9 +285,9 @@ public class DBInterface {
             String cas = data.getString("casereport");
             Gson gson = new Gson();
             CaseReport cases = gson.fromJson(cas, CaseReport.class);
-
+            cases.updateDatetime();
             String message = "INSERT INTO casereports (patientid, doctorid , casenotes, chronic_condition, datetime)"+
-                    " values ('"+cases.patientid+"', '"+cases.doctorid+"', '" +cases.casenotes+"', '"+
+                    " values ('"+cases.patient_id+"', '"+cases.doctorid+"', '" +cases.casenotes+"', '"+
                     cases.chronic_condition+"', '"+cases.datetime+"');";
 
             s.execute(message);
@@ -281,7 +307,7 @@ public class DBInterface {
 
             for (int i = 0; i < med.length(); i++) {
                 JSONObject newmed = med.getJSONObject(i);
-                Medication mediS = gson.fromJson(String.valueOf(newmed), Medication.class);
+                Medication mediS = gson.fromJson(newmed.toString(), Medication.class);
                 message1 = "INSERT INTO medication (casereportid, starttime, endtime, type)"+
                     " values ( '"+id2+"', '"+mediS.starttime+"', '"+mediS.endtime+"', '"
                     +mediS.type+"');";
