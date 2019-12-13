@@ -111,10 +111,7 @@ public class TestDatabase {
                 "}";
 
         JSONObject Object = new JSONObject(cases);
-        //System.out.println(Object);
         DBInterface.addCase(Object);
-
     }
-
 }
 

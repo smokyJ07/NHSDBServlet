@@ -306,11 +306,9 @@ public class DBInterface {
     public static void addCase(JSONObject data) throws SQLException {
         new DBInterface();
         try{
+            // --- FOR CASE REPORTS ---//
             Statement s = conn.createStatement();
-
-
             String cas = data.getString("casereport");
-
             Gson gson = new Gson();
             CaseReport cases = gson.fromJson(cas, CaseReport.class);
 
@@ -319,27 +317,30 @@ public class DBInterface {
                     cases.chronic_condition+"', '"+cases.datetime+"');";
 
             s.execute(message);
-            System.out.println(message);
-// ------------------------
+
+            // --- FOR CASE MEDICATIONS --- //
             JSONArray med = data.getJSONArray("medications");
             String message1="";
 
+            String query = "SELECT MAX(id) FROM casereports";
+
+            ResultSet idMax = s.executeQuery(query);
+            int id2 = 0;
+            if ( idMax.next() ){
+                id2 = idMax.getInt(1);
+            }
+            System.out.println(id2);
 
             for (int i = 0; i < med.length(); i++) {
                 JSONObject newmed = med.getJSONObject(i);
-
                 Medication mediS = gson.fromJson(String.valueOf(newmed), Medication.class);
                 message1 = "INSERT INTO medication (casereportid, starttime, endtime, type)"+
-                    " values ( '1', '"+mediS.starttime+"', '"+mediS.endtime+"', '"
+                    " values ( '"+id2+"', '"+mediS.starttime+"', '"+mediS.endtime+"', '"
                     +mediS.type+"');";
                 s.execute(message1);
-                System.out.println(message1);
             }
 
             s.close();
-            // TO DO: USE INNER JOIN IN ORDER TO COMMUNICATE BETWEEN TWO TABLES.
-            // https://www.w3schools.com/sql/sql_join_inner.asp
-            // System.out.println("Added Case with data:" + caseData);
 
     }catch(JSONException e){
         System.out.println("Error while executing SQL function in addMC");
