@@ -313,7 +313,7 @@ public class DBInterface {
                     +mediS.type+"');";
                 s.execute(message1);
             }
-
+            System.out.println("Added Casereport & Medications with data: " + data.toString());
             s.close();
 
     }catch(JSONException e){
