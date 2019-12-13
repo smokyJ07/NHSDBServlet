@@ -23,7 +23,6 @@ import DBFunctions.DBInterface;
 
 public class TestDatabaseFunctions {
 
-/*
     @Test
     public void TestaddPatient() {
         //create new JSON Object = simulate the one we would receive from server
@@ -43,13 +42,14 @@ public class TestDatabaseFunctions {
     public void TestgetPatient(){
         try{
         JSONObject testjsondata = new JSONObject();
-            testjsondata.put("firstname", "Alexandre");
-            testjsondata.put("lastname", "Orsini");
-            testjsondata.put("phonenum", "+33645464748");
+            testjsondata.put("firstName", "Alexandre");
+            testjsondata.put("lastName", "Orsini");
+            testjsondata.put("phoneNum", "+33645464748");
             testjsondata.put("address", "11 Avenue Auguste Renoir");
             testjsondata.put("email", "alex.orsini@gmail.com");
             testjsondata.put("dob", "10/10/2005");
             DBInterface dbinterface= new DBInterface();
+            //dbinterface.addPatient(testjsondata);
             System.out.println(dbinterface.getPatient(testjsondata));
             Assert.assertEquals(dbinterface.getPatient(testjsondata).get(0).firstName,"Alexandre");
         }
@@ -58,5 +58,69 @@ public class TestDatabaseFunctions {
             e.printStackTrace();
         }
     }
-    */
+    @Test
+    public void TestaddDoctor() {
+        //create new JSON Object = simulate the one we would receive from server
+        String receivedString="{\"firstName\":\"Martin\",\"lastName\":\"Holloway\"," +
+                "\"pagerNumber\":\"12345678\",\"email\":\"holloway@gmail.com\"}";
+        try{
+            JSONObject receivedJsondata = new JSONObject(receivedString);
+            DBInterface dbInterface = new DBInterface();
+            dbInterface.addPatient(receivedJsondata);
+        }catch(Exception e){
+            System.out.println("Exception occured while parsing JSON.");
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void TestaddMC() {
+        //create new JSON Object = simulate the one we would receive from server
+        String receivedString="{\"name\":\"Fulham MC\", \"address\":\"Lillie Road\"}";
+        try{
+            JSONObject receivedJsondata = new JSONObject(receivedString);
+            DBInterface dbInterface = new DBInterface();
+            dbInterface.addMC(receivedJsondata);
+        }catch(Exception e){
+            System.out.println("Exception occured while parsing JSON.");
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void TestgetDoctor(){
+        try{
+            JSONObject testjsondata = new JSONObject();
+            testjsondata.put("firstName", "Martin");
+            testjsondata.put("lastName", "Holloway");
+            testjsondata.put("pagerNumber", "12345678");
+            testjsondata.put("email", "holloway@gmail.com");
+            DBInterface dbinterface= new DBInterface();
+            dbinterface.addDoctor(testjsondata); //in case it doesn't already exist in the database
+            System.out.println(dbinterface.getDoctor(testjsondata));
+            Assert.assertEquals(dbinterface.getDoctor(testjsondata).get(0).firstName,"Martin");
+        }
+        catch(SQLException | JSONException e) {
+            System.out.println("Error while executing SQL function in getPatient");
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void TestgetMC(){
+        try{
+            JSONObject testjsondata = new JSONObject();
+            testjsondata.put("name", "Fulham MC");
+            testjsondata.put("address", "Lillie Road");
+            DBInterface dbinterface= new DBInterface();
+            dbinterface.addPatient(testjsondata);
+            System.out.println(dbinterface.getMC(testjsondata));
+            Assert.assertEquals(dbinterface.getMC(testjsondata).get(0).name,"Fulham MC");
+        }
+        catch(SQLException | JSONException e) {
+            System.out.println("Error while executing SQL function in getPatient");
+            e.printStackTrace();
+        }
+    }
+
+
+
 }
