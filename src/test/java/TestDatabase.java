@@ -1,7 +1,6 @@
 import DBFunctions.DBInterface;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import jdk.internal.jline.internal.Log;
 import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
