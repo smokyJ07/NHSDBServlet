@@ -61,6 +61,7 @@ public class TestDatabase {
         }
     }*/
 
+    /*
     @Test
     public void testaddMC() throws SQLException, JSONException {
         DBInterface dbInterface = new DBInterface();
@@ -74,18 +75,19 @@ public class TestDatabase {
             e.printStackTrace();
         }
     }
+*/
 
     @Test
-    public void testCases() throws SQLException, JSONException {
+    public void testAddCases() throws SQLException, JSONException {
         // VERY USEFUL LINK
         // http://www.objgen.com/json
         DBInterface dbInterface = new DBInterface();
         String cases = "{\n" +
                 "  \"casereport\": {\n" +
-                "    \"patientid\": \"5\",\n" +
-                "    \"doctorid\": \"6\",\n" +
-                "    \"casenotes\": \"\\\"mega ill\\\"\",\n" +
-                "    \"chronic_condition\": \"1\",\n" +
+                "    \"patientid\": \"23\",\n" +
+                "    \"doctorid\": \"7\",\n" +
+                "    \"casenotes\": \"broken leg\",\n" +
+                "    \"chronic_condition\": \"true\",\n" +
                 "    \"datetime\": \"12-12-2019\"\n" +
                 "  },\n" +
                 "  \"medications\": [\n" +
@@ -93,19 +95,13 @@ public class TestDatabase {
                 "      \"casereportid\": \"1\",\n" +
                 "      \"starttime\": \"01-12-2012\",\n" +
                 "      \"endtime\": \"01-12-2012\",\n" +
-                "      \"type\": \"xanax\"\n" +
+                "      \"type\": \"cast for leg\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"casereportid\": \"1\",\n" +
                 "      \"starttime\": \"01-12-2012\",\n" +
                 "      \"endtime\": \"01-12-2012\",\n" +
-                "      \"type\": \"xanny\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"casereportid\": \"1\",\n" +
-                "      \"starttime\": \"01-12-2012\",\n" +
-                "      \"endtime\": \"01-12-2012\",\n" +
-                "      \"type\": \"sleepingpill\"\n" +
+                "      \"type\": \"anti-inflamation\"\n" +
                 "    }\n" +
                 "  ]\n" +
                 "}";
@@ -113,5 +109,17 @@ public class TestDatabase {
         JSONObject Object = new JSONObject(cases);
         dbInterface.addCase(Object);
     }
+
+    @Test
+    public void testGetCases() throws JSONException, SQLException {
+        DBInterface dbInterface = new DBInterface();
+        String message = "{\n" +
+        "  \"function\": \"getCaseReports\",\n" +
+        "  \"data\": \"23\"\n" +
+        "}";
+        JSONObject Object = new JSONObject(message);
+        dbInterface.getCaseReport(Object);
+    }
+
 }
 
