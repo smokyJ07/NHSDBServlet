@@ -121,5 +121,17 @@ public class TestDatabase {
         dbInterface.getCaseReport(Object);
     }
 
+    @Test
+    public void testcheckLogIn() throws JSONException, SQLException {
+
+        DBInterface dbInterface = new DBInterface();
+        String message = "{\n" +
+                "  \"name\": \"Jonas\",\n" +
+                "  \"password\": \"passdword\"\n" +
+                "}";
+        JSONObject Object = new JSONObject(message);
+        dbInterface.checkLogIn(Object);
+    }
+
 }
 

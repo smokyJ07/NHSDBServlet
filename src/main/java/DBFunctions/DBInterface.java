@@ -194,6 +194,20 @@ public class DBInterface {
                 e.printStackTrace();
             }
         }
+
+        if(!tableExists("gplogin")){
+            System.out.println("Creating GP Login table...");
+            try {
+                Statement s = conn.createStatement();
+                String sql = "create table gplogin (id SERIAL PRIMARY KEY, name varchar(128) NOT NULL, " +
+                        "password varchar(32))";
+                s.execute(sql);
+                s.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+
         if(!tableExists("medicalcentres")){
             System.out.println("Creating medicalcentres table...");
             try {
@@ -395,6 +409,40 @@ public class DBInterface {
         String message = instruction.toString();
         return message;
     }
+
+    public static String checkLogIn(JSONObject data) throws JSONException, SQLException {
+        String name = data.getString("name");
+        String password = data.getString("password");
+        JSONObject info = new JSONObject();
+        int id;
+        try{
+            Statement s = conn.createStatement();
+            //SELECT EXISTS (
+            String command= "SELECT * FROM gplogin WHERE name = '"+name
+                    +"' AND password = '"+password+"'";
+            s.execute(command);
+            ResultSet result = s.executeQuery(command);
+            if(!result.next()) {
+                System.out.println("Login unsuccesful");
+                info.put("id", "none");
+                info.put("login", false);
+            }
+            else{
+                System.out.println("Login Succesful");
+                info.put("id", result.getInt("id"));
+                info.put("login", true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        CustomJson instruction = new CustomJson("checkLogIn", info);
+        String message = instruction.toString();
+        System.out.println(message);
+
+        return message;
+    }
+
 }
 
 //  PATIENT ID = 5

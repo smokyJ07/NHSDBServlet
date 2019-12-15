@@ -69,6 +69,10 @@ public class DBServlet extends HttpServlet {
                 resp.setContentType("text/html");
                 resp.getWriter().write(dbInterface.getPatients(data));
             }
+            else if(function.equals("checkLogIn")){
+                resp.setContentType("text/html");
+                resp.getWriter().write(dbInterface.checkLogIn(data));
+            }
             else{
                 System.out.println("No matching function found!");
             }
