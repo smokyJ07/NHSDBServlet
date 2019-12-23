@@ -37,7 +37,8 @@ public class DBInterface {
         try {
            // conn.createStatement();
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection(dbUrl, "postgres", "aleseb99");
+            //conn = DriverManager.getConnection(dbUrl, "postgres", "aleseb99");
+            conn = DriverManager.getConnection(dbUrl, "postgres", "Chhoopnege2k22");//Chloe
             Statement s = conn.createStatement();
             System.out.println("Local connection open");
 
@@ -128,7 +129,7 @@ public class DBInterface {
             try {
                 Statement s = conn.createStatement();
                 String sql = "create table medication(id SERIAL PRIMARY KEY, casereportid INT NOT NULL, " +
-                        "start TIMESTAMP, end TIMESTAMP, type varchar(128))";
+                        "starttime TIMESTAMP, endtime TIMESTAMP, type varchar(128))";
                 s.execute(sql);
                 s.close();
             }catch(SQLException e){
