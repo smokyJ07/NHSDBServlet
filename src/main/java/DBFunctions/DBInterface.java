@@ -36,7 +36,7 @@ public class DBInterface {
 
         try {
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection(dbUrl, "postgres", "aleseb99");
+            conn = DriverManager.getConnection(dbUrl, "postgres", "12345678");
             Statement s = conn.createStatement();
          //   System.out.println("Local connection open");
 
@@ -79,92 +79,6 @@ public class DBInterface {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public static String getPatients(JSONObject data) throws SQLException, URISyntaxException {
-        JSONArray myArray = new JSONArray();
-        try {
-            String Name = data.getString("name");
-            String message = "select * from patients where \"name\" = '" + Name + "';";
-            Statement s = conn.createStatement();
-            s.execute(message);
-            ResultSet rset = s.executeQuery(message);
-            while (rset.next()) {
-                JSONObject patient = new JSONObject();
-                patient.put("name", rset.getString("name"));
-                patient.put("phoneNum", rset.getString("phonenumber"));
-                patient.put("address", rset.getString("address"));
-                patient.put("dob", rset.getString("dob"));
-                patient.put("email", rset.getString("email"));
-                patient.put("id", rset.getString("id"));
-                myArray.put(patient);
-            }
-        }catch(JSONException e){
-            e.printStackTrace();
-        }
-        CustomJson instruction = new CustomJson("getPatients", myArray);
-        System.out.println(instruction);
-        String message = instruction.toString();
-        System.out.println(message);
-
-        return message;
-    }
-
-    public static String getDoctor(JSONObject data) throws SQLException {
-        JSONArray myArray = new JSONArray();
-        try {
-            Gson gson = new Gson();
-            String doctorData = data.toString();
-            Doctor d = gson.fromJson(doctorData, Doctor.class);
-            String message = "select * from doctors where \"name\" = '"+d.name+"';";
-            Statement s = conn.createStatement();
-            s.execute(message);
-
-            ResultSet rset = s.executeQuery(message);
-            while(rset.next()) {
-                Doctor newD = new Doctor(rset.getString("name"), rset.getString("pagerNumber"), rset.getString("email"));
-                System.out.println(newD.name);
-            }
-        }
-        catch(SQLException e) {
-            System.out.println("Error while executing SQL function in addPatient");
-            e.printStackTrace();
-        }
-
-        CustomJson instruction = new CustomJson("getDoctor", myArray);
-        String message = instruction.toString();
-        System.out.println(message);
-
-        return message;
-    }
-
-    public static String getMC(JSONObject data) throws SQLException {
-        JSONArray myArray = new JSONArray();
-        try {
-            Gson gson = new Gson();
-            String MCData = data.toString();
-            medicalCentre mc = gson.fromJson(MCData, medicalCentre.class);
-            String message = "select * from medicalcentre where \"name\" = '" + mc.name +"';";
-            Statement s = conn.createStatement();
-            s.execute(message);
-
-            ResultSet rset = s.executeQuery(message);
-            while(rset.next()) {
-                medicalCentre newMC = new medicalCentre(rset.getString("name"), rset.getString("address"));
-                System.out.println(newMC.name);
-                System.out.println(newMC.address);
-            }
-        }
-        catch(SQLException e) {
-            System.out.println("Error while executing SQL function in addPatient");
-            e.printStackTrace();
-        }
-
-        CustomJson instruction = new CustomJson("getMC", myArray);
-        String message = instruction.toString();
-        System.out.println(message);
-
-        return message;
     }
 
     private void createTables(){
@@ -308,7 +222,7 @@ public class DBInterface {
         }
     }
 
-    public static void addCase(JSONObject data) throws SQLException {
+    public void addCaseReport(JSONObject data) throws SQLException {
         try{
             // --- FOR CASE REPORTS ---//
             Statement s = conn.createStatement();
@@ -318,7 +232,7 @@ public class DBInterface {
             cases.updateDatetime();
 
             String message = "INSERT INTO casereports (patientid, doctorid , casenotes, chronic_condition, datetime)"+
-                    " values ('"+cases.patientid+"', '"+cases.doctorid+"', '" +cases.casenotes+"', '"+
+                    " values ('"+cases.patient_id+"', '"+cases.doctor_id+"', '" +cases.casenotes+"', '"+
                     cases.chronic_condition+"', '"+cases.datetime+"');";
 
             s.execute(message);
@@ -334,7 +248,6 @@ public class DBInterface {
             if ( idMax.next() ){
                 id2 = idMax.getInt(1);
             }
-            System.out.println(id2);
 
             for (int i = 0; i < med.length(); i++) {
                 JSONObject newmed = med.getJSONObject(i);
@@ -344,20 +257,67 @@ public class DBInterface {
                     +mediS.type+"');";
                 s.execute(message1);
             }
-
             s.close();
 
-    }catch(JSONException e){
-        System.out.println("Error while executing SQL function in addMC");
-        e.printStackTrace();
-    }
+            //debugging messages
+            System.out.println("For casereport id: " + id2 + " added casereport " + cas +
+                    " and medications " + med.toString());
+
+        }catch(JSONException e){
+            System.out.println("Error while executing SQL function in addMC");
+            e.printStackTrace();
+        }
     }
 
-    public static String getCaseReport(JSONObject data) throws JSONException, SQLException {
-        System.out.println("  ");
+    public void changeCaseReport(JSONObject data){
+        try{
+            // --- FOR CASE REPORTS ---//
+            Statement s = conn.createStatement();
+            String cas = data.getString("casereport");
+            Gson gson = new Gson();
+            CaseReport cases = gson.fromJson(cas, CaseReport.class);
+            cases.updateDatetime();
+
+            //delete old casereport
+            String deleteMessage = "DELETE FROM casereports WHERE id = " + cases.id + ";";
+            s.execute(deleteMessage);
+
+            //insert new casereport
+            String caseMessage = "INSERT INTO casereports (id, patientid, doctorid , casenotes, chronic_condition, datetime)"+
+                    " values ('" + cases.id + "', '" +cases.patient_id+"', '"+cases.doctor_id+"', '" +cases.casenotes+"', '"+
+                    cases.chronic_condition+"', '"+cases.datetime+"');";
+            s.execute(caseMessage);
+
+            // --- FOR MEDICATIONS --- //
+            JSONArray med = data.getJSONArray("medications");
+            String medicationMessage="";
+
+            int id2 = cases.id;
+
+            for (int i = 0; i < med.length(); i++) {
+                JSONObject newmed = med.getJSONObject(i);
+                Medication mediS = gson.fromJson(newmed.toString(), Medication.class);
+                medicationMessage = "INSERT INTO medication (casereportid, starttime, endtime, type)"+
+                        " values ( '"+id2+"', '"+mediS.starttime+"', '"+mediS.endtime+"', '"
+                        +mediS.type+"');";
+                s.execute(medicationMessage);
+            }
+            s.close();
+
+            //debugging messages
+            System.out.println("For casereport id: " + id2 + " added casereport " + cas +
+                    " and medications " + med.toString());
+
+        }catch(Exception e){
+            System.out.println("Error while executing SQL function in addMC");
+            e.printStackTrace();
+        }
+    }
+
+    public String getCaseReports(JSONObject data) throws JSONException, SQLException {
         JSONArray Data = new JSONArray();
         try {
-            String patientID = data.getString("data");
+            int patientID = data.getInt("patient_id");
             Statement s = conn.createStatement();
             Statement s1 = conn.createStatement();
             int caseID;
@@ -367,8 +327,8 @@ public class DBInterface {
             s.execute(message);
             ResultSet rset = s.executeQuery(message);
 
-                while (rset.next()) {       // LOOP THROUGH CASES
-                JSONObject Cases = new JSONObject();
+            while (rset.next()) {       // LOOP THROUGH CASES
+                JSONObject singleCase = new JSONObject();
                 JSONArray medArray = new JSONArray();
 
                 caseID = rset.getInt("id");
@@ -379,25 +339,25 @@ public class DBInterface {
                 s1.execute(message1);
                 ResultSet rset1 = s1.executeQuery(message1);
 
-                Cases.put("id", rset.getInt("id"));
-                Cases.put("datetime", rset.getString("datetime"));
-                Cases.put("casenotes", rset.getString("casenotes"));
-                Cases.put("chronic_condition", rset.getString("chronic_condition"));
-                    JSONObject combination=  new JSONObject();
+                singleCase.put("id", rset.getInt("id"));
+                singleCase.put("datetime", rset.getString("datetime"));
+                singleCase.put("casenotes", rset.getString("casenotes"));
+                singleCase.put("chronic_condition", rset.getBoolean("chronic_condition"));
+                JSONObject combination=  new JSONObject();
                 while (rset1.next()) {      // LOOP THROUGH MEDICATIONS
 
                     JSONObject medObj=  new JSONObject();
                     medObj.put("type", rset1.getString("type"));
                     medObj.put("starttime", rset1.getString("starttime"));
-                    medObj.put("enttime", rset1.getString("endtime"));
-                  //  medID = rset1.getInt("id");
-                  //  System.out.println("medication  id");
-                  //  System.out.println(medID);
+                    medObj.put("endtime", rset1.getString("endtime"));
+                    //  medID = rset1.getInt("id");
+                    //  System.out.println("medication  id");
+                    //  System.out.println(medID);
                     medArray.put(medObj);
-                    combination.put("casereport", Cases);
-                    combination.put("medication", medArray);
                 } //System.out.println(medArray);
-                    Data.put(combination);
+                combination.put("casereport", singleCase);
+                combination.put("medications", medArray);
+                Data.put(combination);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -408,9 +368,96 @@ public class DBInterface {
         System.out.println(instruction);
         String message = instruction.toString();
         return message;
+        }
+
+
+    public String getPatients(JSONObject data) throws SQLException, URISyntaxException {
+        JSONArray myArray = new JSONArray();
+        try {
+            String Name = data.getString("name");
+            String message = "select * from patients where \"name\" = '" + Name + "';";
+            Statement s = conn.createStatement();
+            s.execute(message);
+            ResultSet rset = s.executeQuery(message);
+            while (rset.next()) {
+                JSONObject patient = new JSONObject();
+                patient.put("name", rset.getString("name"));
+                patient.put("phoneNum", rset.getString("phonenum"));
+                patient.put("address", rset.getString("address"));
+                patient.put("dob", rset.getString("dob"));
+                patient.put("email", rset.getString("email"));
+                patient.put("id", rset.getString("id"));
+                myArray.put(patient);
+            }
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        CustomJson instruction = new CustomJson("getPatients", myArray);
+        System.out.println(instruction);
+        String message = instruction.toString();
+        System.out.println(message);
+
+        return message;
     }
 
-    public static String checkLogIn(JSONObject data) throws JSONException, SQLException {
+    public String getDoctor(JSONObject data) throws SQLException {
+        JSONArray myArray = new JSONArray();
+        try {
+            Gson gson = new Gson();
+            String doctorData = data.toString();
+            Doctor d = gson.fromJson(doctorData, Doctor.class);
+            String message = "select * from doctors where \"name\" = '"+d.name+"';";
+            Statement s = conn.createStatement();
+            s.execute(message);
+
+            ResultSet rset = s.executeQuery(message);
+            while(rset.next()) {
+                Doctor newD = new Doctor(rset.getString("name"), rset.getString("pagernum"), rset.getString("email"));
+                System.out.println(newD.name);
+            }
+        }
+        catch(SQLException e) {
+            System.out.println("Error while executing SQL function in addPatient");
+            e.printStackTrace();
+        }
+
+        CustomJson instruction = new CustomJson("getDoctor", myArray);
+        String message = instruction.toString();
+        System.out.println(message);
+
+        return message;
+    }
+
+    public String getMC(JSONObject data) throws SQLException {
+        JSONArray myArray = new JSONArray();
+        try {
+            Gson gson = new Gson();
+            String MCData = data.toString();
+            medicalCentre mc = gson.fromJson(MCData, medicalCentre.class);
+            String message = "select * from medicalcentre where \"name\" = '" + mc.name +"';";
+            Statement s = conn.createStatement();
+            s.execute(message);
+
+            ResultSet rset = s.executeQuery(message);
+            while(rset.next()) {
+                medicalCentre newMC = new medicalCentre(rset.getString("name"), rset.getString("address"));
+                System.out.println(newMC.name);
+                System.out.println(newMC.address);
+            }
+        }
+        catch(SQLException e) {
+            System.out.println("Error while executing SQL function in addPatient");
+            e.printStackTrace();
+        }
+
+        CustomJson instruction = new CustomJson("getMC", myArray);
+        String message = instruction.toString();
+        System.out.println(message);
+
+        return message;
+    }
+
+    public String checkLogIn(JSONObject data) throws JSONException, SQLException {
         String name = data.getString("name");
         String password = data.getString("password");
         JSONObject info = new JSONObject();

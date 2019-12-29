@@ -1,22 +1,12 @@
 import DBFunctions.DBInterface;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import jdk.internal.jline.internal.Log;
-import jdk.nashorn.internal.parser.JSONParser;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.Assert;
 
-import java.io.FileReader;
-import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.logging.Logger;
-import static DBFunctions.DBInterface.getPatients;
+
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static junit.framework.TestCase.assertEquals;
 
 
@@ -107,7 +97,7 @@ public class TestDatabase {
                 "}";
 
         JSONObject Object = new JSONObject(cases);
-        dbInterface.addCase(Object);
+        dbInterface.addCaseReport(Object);
     }
 
     @Test
@@ -118,7 +108,7 @@ public class TestDatabase {
         "  \"data\": \"23\"\n" +
         "}";
         JSONObject Object = new JSONObject(message);
-        dbInterface.getCaseReport(Object);
+        dbInterface.getCaseReports(Object);
     }
 
     @Test
