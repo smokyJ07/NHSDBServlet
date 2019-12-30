@@ -278,10 +278,10 @@ public class DBInterface {
             CaseReport cases = gson.fromJson(cas, CaseReport.class);
             cases.updateDatetime();
 
+            // --- FOR CASEREPORT --- //
             //delete old casereport
             String deleteMessage = "DELETE FROM casereports WHERE id = " + cases.id + ";";
             s.execute(deleteMessage);
-
             //insert new casereport
             String caseMessage = "INSERT INTO casereports (id, patientid, doctorid , casenotes, chronic_condition, datetime)"+
                     " values ('" + cases.id + "', '" +cases.patient_id+"', '"+cases.doctor_id+"', '" +cases.casenotes+"', '"+
@@ -289,6 +289,10 @@ public class DBInterface {
             s.execute(caseMessage);
 
             // --- FOR MEDICATIONS --- //
+            //delete old medication
+            String deleteMedication = "DELETE FROM medication WHERE casereportid = " + cases.id + ";";
+            s.execute(deleteMedication);
+            //insert new medication
             JSONArray med = data.getJSONArray("medications");
             String medicationMessage="";
 
