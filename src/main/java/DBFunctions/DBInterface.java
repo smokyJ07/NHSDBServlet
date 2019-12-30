@@ -101,7 +101,7 @@ public class DBInterface {
             try {
                 Statement s = conn.createStatement();
                 String sql = "create table doctors(id SERIAL PRIMARY KEY, name varchar(128) NOT NULL, " +
-                        "pagernum varchar(32), email varchar(128))";
+                        "pagernum varchar(32), email varchar(128), username varchar(128), password varchar (128))";
                 s.execute(sql);
                 s.close();
             }catch(SQLException e){
@@ -189,8 +189,8 @@ public class DBInterface {
 
             String message;
             Statement s = conn.createStatement();
-            message = "INSERT INTO doctors (\"name\", \"pagernum\", \"email\") values " +
-                    "('"+d.name+"','"+d.pagerNum+"', '"+d.email+"');";
+            message = "INSERT INTO doctors (name, pagernum, email, username, password) values " +
+                    "('"+d.name+"','"+d.pagerNum+"','"+d.email+"','"+d.username+"','"+d.password + "');";
             s.execute(message);
             s.close();
             System.out.println("Added doctor with data:" + doctorData);
@@ -416,7 +416,8 @@ public class DBInterface {
 
             ResultSet rset = s.executeQuery(message);
             while(rset.next()) {
-                Doctor newD = new Doctor(rset.getString("name"), rset.getString("pagernum"), rset.getString("email"));
+                Doctor newD = new Doctor(rset.getString("name"), rset.getString("pagernum"),
+                        rset.getString("email"), rset.getString("username"), rset.getString("password"));
                 System.out.println(newD.name);
             }
         }
@@ -462,26 +463,28 @@ public class DBInterface {
     }
 
     public String checkLogIn(JSONObject data) throws JSONException, SQLException {
-        String name = data.getString("name");
+        String username = data.getString("username");
         String password = data.getString("password");
         JSONObject info = new JSONObject();
         int id;
         try{
             Statement s = conn.createStatement();
             //SELECT EXISTS (
-            String command= "SELECT * FROM gplogin WHERE name = '"+name
+            String command= "SELECT * FROM doctors WHERE username = '"+username
                     +"' AND password = '"+password+"'";
             s.execute(command);
             ResultSet result = s.executeQuery(command);
             if(!result.next()) {
                 System.out.println("Login unsuccesful");
-                info.put("id", "none");
+                info.put("id", "");
                 info.put("login", false);
+                info.put("name", "");
             }
             else{
                 System.out.println("Login Succesful");
                 info.put("id", result.getInt("id"));
                 info.put("login", true);
+                info.put("name", result.getString("name"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
