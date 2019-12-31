@@ -1,6 +1,6 @@
 This is a reference document to specify the exact format and spelling of the JSONs we are sending back and forth; plus database naming.
 Variable values that are specified by user are showed by the string "..."
---------------------------------
+
 JSONs:
 addPatient:
 {"function":"addPatient",
@@ -39,6 +39,7 @@ getPatients (Server -> Client):
 {"function":"getPatients",
  "data":[
     {
+        "id":"...",
         "name":"...",
         "address":"...",
         "dob":"...",
@@ -52,7 +53,102 @@ getPatients (Server -> Client):
     ]
 }
 
----------------------------
+addCaseReport (Client -> Server):
+{"function":"addCaseReport",
+ "data":{
+            "casereport":   {
+                                "casenotes":"...",
+                                "chronic_condition":"...",
+                                "patient_id":"..."
+                            }
+            "medications":   [
+                                {
+                                    "starttime":"...",
+                                    "endtime":"...",
+                                    "type":"..."
+                                },
+                                {
+                                    "starttime":"...",
+                                    "endtime":"...",
+                                    "type":"..."
+                                },
+                                {
+                                    add more if necessary
+                                }
+                            ]
+
+        }
+ }
+
+changeCaseReport(Client -> Server)
+{"function":"changeCaseReport",
+ "data":{
+            "casereport":   {
+                                "id":"...",
+                                "casenotes":"...",
+                                "chronic_condition":"...",
+                                "patient_id":"..."
+                            }
+            "medications":   [
+                                {
+                                    "starttime":"...",
+                                    "endtime":"...",
+                                    "type":"..."
+                                },
+                                {
+                                    "starttime":"...",
+                                    "endtime":"...",
+                                    "type":"..."
+                                },
+                                {
+                                    add more if necessary
+                                }
+                            ]
+
+        }
+ }
+
+getCaseReports (Client -> Server)
+{"function":"getCaseReports",
+ "data":"..." -> in this case the patient_id
+}
+
+getCaseReports (Server -> Client)
+{"function":"getCaseReports",
+ "data":    [   {"casereport":  {"id":"...",
+                                 "datetime":"...",
+                                 "chronic_condition":"...",
+                                 "casenotes":"..."
+                                 },
+                 "medications":  [  {"type":"...",
+                                     "starttime":"...",
+                                     "endtime":"..."}
+                                    {"type":"...",
+                                    "starttime":"...",
+                                    "endtime":"..."},
+                                    {as many as needed}
+                                 ]
+                },
+                {"casereport":  {"id":"...",
+                                "datetime":"...",
+                                "chronic_condition":"...",
+                                "casenotes":"..."
+                                },
+                "medications":  [  {"type":"...",
+                                    "starttime":"...",
+                                    "endtime":"..."}
+                                   {"type":"...",
+                                   "starttime":"...",
+                                   "endtime":"..."},
+                                   {as many as needed}
+                                ]
+                },
+                { as many as needed }
+
+            ]
+}
+
+
 DATABASE reference spelling conventions:
 
 create table patients (
@@ -77,11 +173,10 @@ create table medicalcentre(
                             address varchar(128)
 );
 
-create table linkpatientdoctormedcentre (
+create table patientofdoctor (
                                  id serial primary key,
                                  patientid int NOT NULL,
-                                 doctorid int NOT NULL,
-                                 medcentreid int NOT NULL
+                                 doctorid int NOT NULL
 );
 
 create table casereports(
@@ -100,3 +195,6 @@ create table medication(
                         endtime TIMESTAMP,
                         type varchar(128)
                         );
+
+
+

@@ -1,15 +1,12 @@
 import DBFunctions.DBInterface;
 import org.json.JSONObject;
 
-import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.*;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns={"/patients"},loadOnStartup = 1)
@@ -43,7 +40,7 @@ public class DBServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String reqBody= req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        //System.out.println(reqBody);
+        System.out.println(reqBody);
         try {
             //Parse and decompose json received
             JSONObject reqBodyJson = new JSONObject(reqBody);
@@ -61,21 +58,23 @@ public class DBServlet extends HttpServlet {
             else if(function.equals("addMC")){
                 dbInterface.addMC(data);
             }
-            else if(function.equals("addCase")){
-                resp.setContentType("text.html");
-                dbInterface.addCase(data);
+            else if(function.equals("addCaseReport")){
+                dbInterface.addCaseReport(data);
+            }
+            else if(function.equals("changeCaseReport")){
+                dbInterface.changeCaseReport(data);
             }
             else if(function.equals("getPatients")){
                 resp.setContentType("text/html");
                 resp.getWriter().write(dbInterface.getPatients(data));
             }
-            else if(function.equals("getDoctors")){
+            else if (function.equals("getCaseReports")){
                 resp.setContentType("text/html");
-                resp.getWriter().write(dbInterface.getDoctor(data));
+                resp.getWriter().write(dbInterface.getCaseReports(data));
             }
-            else if(function.equals("getMC")){
+            else if(function.equals("checkLogIn")){
                 resp.setContentType("text/html");
-                resp.getWriter().write(dbInterface.getMC(data));
+                resp.getWriter().write(dbInterface.checkLogIn(data));
             }
             else{
                 System.out.println("No matching function found!");
