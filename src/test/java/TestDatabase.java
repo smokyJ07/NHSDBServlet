@@ -11,7 +11,7 @@ import static junit.framework.TestCase.assertEquals;
 
 
 public class TestDatabase {
-
+    /*
     @Test
     public void testGetPatient() throws SQLException, JSONException {
         DBInterface dbInterface = new DBInterface();
@@ -66,7 +66,7 @@ public class TestDatabase {
         }
     }
 */
-
+/*
     @Test
     public void testAddCases() throws SQLException, JSONException {
         // VERY USEFUL LINK
@@ -122,6 +122,6 @@ public class TestDatabase {
         JSONObject Object = new JSONObject(message);
         dbInterface.checkLogIn(Object);
     }
-
+*/
 }
 
