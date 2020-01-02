@@ -147,7 +147,7 @@ public class DBInterface {
             }
         }
         if(!tableExists("casereports")){
-            System.out.println("Creating case reports table...");
+            System.out.println("Creating casereports table...");
             try {
                 Statement s = conn.createStatement();
                 String sql = "create table casereports(id SERIAL PRIMARY KEY, patientid INT NOT NULL, " +
@@ -158,11 +158,24 @@ public class DBInterface {
                 e.printStackTrace();
             }
         }
+        if(!tableExists("patienttodoctor")){
+            System.out.println("Creating patienttodoctor table...");
+            try{
+                Statement s = conn.createStatement();
+                String sql = "CREATE TABLE patienttodoctor(id SERIAL PRIMARY KEY, patientid INT NOT NULL, " +
+                        "doctorid INT NOT NULL);";
+                s.execute(sql);
+                s.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
 
         System.out.println("All required tables exist.");
     }
 
-    public void addPatient(JSONObject data){
+    public String addPatient(JSONObject data){
+        String returnString = "";
         try {
             Gson gson = new Gson();
             String patientData = data.toString();
@@ -175,10 +188,71 @@ public class DBInterface {
             s.execute(message);
             s.close();
             System.out.println("Added patient with data:" + patientData);
-        }catch(SQLException e){
+
+            //adding patient and gp to patienttodoctor table
+            String gpName = data.getString("gp");
+            //get doctor ID
+            String getGPID = "SELECT * FROM doctors WHERE name = '" + gpName + "';";
+            Statement s1 = conn.createStatement();
+            ResultSet rset = s1.executeQuery(getGPID);
+            int gpID = 0;
+            if (rset.next()){
+                gpID = rset.getInt("id");
+            }
+            s1.close();
+            //get patient id
+            String getPatientID = "SELECT MAX(id) FROM patients;";
+            Statement s2 = conn.createStatement();
+            ResultSet rset2 = s2.executeQuery(getPatientID);
+            int patientID = 0;
+            if(rset2.next()){
+                patientID = rset2.getInt(1);
+            }
+            s2.close();
+            //put 2 ids into patienttodoctor and construct response
+            if(patientID != 0 && gpID != 0) {
+                String put = "INSERT INTO patienttodoctor (patientid, doctorid) VALUES('" + patientID + "','" + gpID + "');";
+                Statement s3 = conn.createStatement();
+                s3.execute(put);
+                s3.close();
+
+                JSONObject responseData = new JSONObject();
+                responseData.put("gpid_found", true);
+                responseData.put("patientid_found", true);
+                CustomJson resp = new CustomJson("addPatient", responseData);
+                returnString = resp.toString();
+
+            }
+            else if (patientID == 0 && gpID != 0){
+                System.out.println("Error: wasn't able to retrieve patientID while inserting patient.");
+
+                JSONObject responseData = new JSONObject();
+                responseData.put("gpid_found", true);
+                responseData.put("patientid_found", false);
+                CustomJson resp = new CustomJson("addPatient", responseData);
+                returnString = resp.toString();
+            }
+            else if (gpID == 0 && patientID != 0){
+                System.out.println("Error: no GP found with the given name.");
+
+                JSONObject responseData = new JSONObject();
+                responseData.put("gpid_found", false);
+                responseData.put("patientid_found", true);
+                CustomJson resp = new CustomJson("addPatient", responseData);
+                returnString = resp.toString();
+            }
+            else{
+                JSONObject responseData = new JSONObject();
+                responseData.put("gpid_found", false);
+                responseData.put("patientid_found", false);
+                CustomJson resp = new CustomJson("addPatient", responseData);
+                returnString = resp.toString();
+            }
+        }catch(Exception e){
             System.out.println("Error while executing SQL function in addPatient");
             e.printStackTrace();
         }
+        return returnString;
     }
 
     public void addDoctor(JSONObject data){
@@ -378,8 +452,10 @@ public class DBInterface {
     public String getPatients(JSONObject data) throws SQLException, URISyntaxException {
         JSONArray myArray = new JSONArray();
         try {
-            String Name = data.getString("name");
-            String message = "select * from patients where \"name\" = '" + Name + "';";
+            String name = data.getString("name");
+            int gpID = data.getInt("gpid");
+            String message = "SELECT * FROM patients WHERE (patients.name = '" + name + "')  AND (patients.id IN (" +
+                    "SELECT patientid from patienttodoctor WHERE patienttodoctor.doctorid = " + gpID +"));";
             Statement s = conn.createStatement();
             s.execute(message);
             ResultSet rset = s.executeQuery(message);

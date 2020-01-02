@@ -50,7 +50,8 @@ public class DBServlet extends HttpServlet {
             //Execute correct function
             DBInterface dbInterface = new DBInterface();
             if (function.equals("addPatient")){
-                dbInterface.addPatient(data);
+                resp.setContentType("text/html");
+                resp.getWriter().write(dbInterface.addPatient(data));
             }
             else if(function.equals("addDoctor")) {
                 dbInterface.addDoctor(data);
