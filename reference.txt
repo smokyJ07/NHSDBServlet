@@ -9,7 +9,7 @@ addPatient (Client -> Server):
     "address":"...",
     "dob":"...",
     "phoneNum":"...",
-    "email":"..."
+    "email":"...",
     "gp":"..."
     }
 }
