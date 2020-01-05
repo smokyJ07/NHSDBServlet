@@ -1,8 +1,13 @@
 public class ConsoleCodeIgnoreButDontDelete {
     /*
-    THOUGHT WE COULD USE THIS CODE WHEN CREQTING NEW DB FROM SCRATCH SO WE ALL HAVE SAME VERSION
+    IT WAS THOUGHT THIS CODE COULD BE USEFUL WHEN CONNECTING TO A NEW LOCAL DATABASE AND CREATING TABLES FROM SCRATCH
+    SO ALL DEVELOPPERS HAVE A CONSISTENT DATABASE
     NOTE : ALL POSTGRES TABLE AND COLUMN NAMES MUST BE IN LOWERCASE
 
+    This was before we switched to a remote database accessible from all computers, when we still all had to work on local databases.
+     */
+
+/*
 create table patients (
                           id SERIAL PRIMARY KEY,
                           firstname varchar(128) NOT NULL,

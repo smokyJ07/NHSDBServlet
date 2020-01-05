@@ -9,6 +9,10 @@ import java.sql.SQLException;
 import static org.hamcrest.CoreMatchers.is;
 import static junit.framework.TestCase.assertEquals;
 
+/*
+This unit testing code was originally used to test the connection to the database.
+It has been modified to test the latest DBInterface functions (such as addCases)
+ */
 
 public class TestDatabase {
     /*

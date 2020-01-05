@@ -12,6 +12,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+This class:
+ - establishes connection to the database
+ - checks if all relevant tables exist and creates them if they don't
+ - contains all methods used to pass info between servlet and database
+ - note: input for interface functions (add/get Patient/Doctor/MC...) is a JSON Object received from the Client application,
+ converted into the appropriate class with all relevant fields and passed into appropriate table
+ */
+
 public class DBInterface {
 
     static Connection conn = null;
@@ -61,6 +70,8 @@ public class DBInterface {
             e.printStackTrace();
         }
     }
+
+    // CHECKING ALL NECESSARY TABLES EXIST, CREATING THEM IF NOT
 
     private boolean tableExists(String tableName){
         try {
@@ -173,6 +184,8 @@ public class DBInterface {
 
         System.out.println("All required tables exist.");
     }
+
+    // METHODS TO PASS NEW OBJECTS TO THE DATABASE
 
     public String addPatient(JSONObject data){
         String returnString = "";
@@ -391,6 +404,8 @@ public class DBInterface {
             e.printStackTrace();
         }
     }
+
+    // METHODS TO RETRIEVE INFO FROM THE DATABASE
 
     public String getCaseReports(JSONObject data) throws JSONException, SQLException {
         JSONArray Data = new JSONArray();
