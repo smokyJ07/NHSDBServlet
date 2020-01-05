@@ -11,7 +11,7 @@ import static junit.framework.TestCase.assertEquals;
 
 
 public class TestDatabase {
-
+/*
     @Test
     public void testGetPatient() throws SQLException, JSONException {
         DBInterface dbInterface = new DBInterface();
@@ -27,7 +27,7 @@ public class TestDatabase {
         dbInterface.closeConnection();
 
     }
-
+*/
     /*@Test
     public void testgetDoctor() throws SQLException, JSONException {
         DBInterface dbInterface = new DBInterface();

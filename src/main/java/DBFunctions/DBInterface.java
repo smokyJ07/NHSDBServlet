@@ -36,7 +36,8 @@ public class DBInterface {
 
         try {
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection(dbUrl, "postgres", "12345678");
+            //conn = DriverManager.getConnection(dbUrl, "postgres", "12345678");
+            conn = DriverManager.getConnection(dbUrl, "postgres", "Chhoopnege2k22");
             Statement s = conn.createStatement();
          //   System.out.println("Local connection open");
 
