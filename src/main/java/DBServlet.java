@@ -54,7 +54,8 @@ public class DBServlet extends HttpServlet {
                 resp.getWriter().write(dbInterface.addPatient(data));
             }
             else if(function.equals("addDoctor")) {
-                dbInterface.addDoctor(data);
+                resp.setContentType("text/html");
+                resp.getWriter().write(dbInterface.addDoctor(data));
             }
             else if(function.equals("addMC")){
                 dbInterface.addMC(data);

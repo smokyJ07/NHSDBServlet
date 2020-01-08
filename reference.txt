@@ -21,13 +21,23 @@ addPatient(Server -> Client):
     }
 }
 
-addDoctor:
+addDoctor (Client -> Server):
 {"function":"addDoctor",
  "data":{
     "name":"...",
     "pagerNumber":"...",
     "email":"..."
+    "username":"...",
+    "password":"..."
     }
+}
+
+addDoctor (Server -> Client):
+{"function":"addDoctor",
+ "data":{
+    "username_exists":boolean,
+    "name_exists":boolean
+        }
 }
 
 addMC:

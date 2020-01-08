@@ -39,9 +39,9 @@ public class DBInterface {
             e.printStackTrace();
             System.out.println("Connection failed");
         }
-
+        /*
         //use this to connect to your local db: note to change password and username to whatever you use
-        /*String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+        String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -268,24 +268,58 @@ public class DBInterface {
         return returnString;
     }
 
-    public void addDoctor(JSONObject data){
+    public String addDoctor(JSONObject data){
+        String returnString = "";
         try {
             Gson gson = new Gson();
             String doctorData = data.toString();
             Doctor d = gson.fromJson(doctorData, Doctor.class);
 
-            String message;
-            Statement s = conn.createStatement();
-            message = "INSERT INTO doctors (name, pagernum, email, username, password) values " +
-                    "('"+d.name+"','"+d.pagerNum+"','"+d.email+"','"+d.username+"','"+d.password + "');";
-            s.execute(message);
-            s.close();
-            System.out.println("Added doctor with data:" + doctorData);
-
-        }catch(SQLException e){
-            System.out.println("Error while executing SQL function in addDoctor");
+            //check whether username already exists
+            JSONObject responseData = new JSONObject();
+            String checkNames;
+            Statement s0 = conn.createStatement();
+            checkNames = "SELECT * FROM doctors WHERE username = '" + d.username + "';";
+            ResultSet rset1 = s0.executeQuery(checkNames);
+            if (rset1.next()){
+                try {
+                    responseData.put("username_exists", true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+            else{
+                responseData.put("username_exists", false);
+            }
+            //check whether name already exists
+            checkNames = "SELECT * FROM doctors WHERE name = '" + d.name + "';";
+            ResultSet rset2 = s0.executeQuery(checkNames);
+            if(rset2.next()){
+                try {
+                    responseData.put("name_exists", true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+            else{
+                responseData.put("name_exists", false);
+            }
+            if(!responseData.getBoolean("name_exists") && !responseData.getBoolean("username_exists")){
+                String message;
+                Statement s = conn.createStatement();
+                message = "INSERT INTO doctors (name, pagernum, email, username, password) values " +
+                        "('"+d.name+"','"+d.pagerNum+"','"+d.email+"','"+d.username+"','"+d.password + "');";
+                s.execute(message);
+                s.close();
+                System.out.println("Added doctor with data:" + doctorData);
+            }
+            CustomJson response = new CustomJson("addDoctor", responseData);
+            returnString = response.toString();
+            s0.close();
+        }catch(Exception e) {
             e.printStackTrace();
         }
+        return returnString;
     }
 
     public void addMC(JSONObject data){
