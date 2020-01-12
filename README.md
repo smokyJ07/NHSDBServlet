@@ -84,7 +84,7 @@ This concludes the demo of how to use the Servlet when its running.
 
 ## Contributing
 
-Please contact develeppers for contributing. 
+Please contact developpers for contributing. 
 
 ## Versioning
 
